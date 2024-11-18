@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "A1 Base",
   "logo": {
     "dark": "/logo/a1base_logo_tiny.png",
     "light": "/logo/a1base_logo_tiny.png"
@@ -66,12 +66,8 @@
     },    {
       "group": "💡 Examples",
       "pages": [
-        "examples/life-coach",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "examples/life-coach"
+        
       ]
     },
     {
