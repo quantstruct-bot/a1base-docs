@@ -29,6 +29,10 @@
     {
       "name": "API Reference",
       "url": "api-reference"
+    },
+    {
+      "name": "NodeJS",
+      "url": "node-js"
     }
   ],
   "anchors": [
@@ -74,6 +78,12 @@
       "group": "API Documentation",
       "pages": [
         "api-reference/introduction"
+      ]
+    },
+    {
+      "group": "NodeJS",
+      "pages": [
+        "node-js/introduction"
       ]
     },
     {

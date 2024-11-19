@@ -8,25 +8,14 @@ description: 'Using the A1Base API to send, receive, and manage messages'
 </Note>
 
 ## Welcome
-
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
-
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+The A1Base API allows you to give your AI Agent a phone number and send messages on WhatsApp and Telegram.
 
 ## Authentication
+All requests to the A1Base API must include two headers:
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+- `X-API-Key`: Your API key
+- `X-API-Secret`: Your API secret
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
-```
+If you are using our official SDKs, you will set these credentials when constructing a client, and the SDK will automatically include them with every request. If you're integrating directly with the API, you'll need to include these headers yourself.
+
+As A1Base is in Alpha your keys will be provided to you by the team after an onboarding call.
