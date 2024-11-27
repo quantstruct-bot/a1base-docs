@@ -70,7 +70,8 @@
     },    {
       "group": "💡 Examples",
       "pages": [
-        "examples/life-coach"
+        "examples/life-coach",
+        "examples/checkin-bot"
         
       ]
     },
