@@ -78,11 +78,7 @@
     },
     {
       "group": "Individual Message Endpoints",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
-      ]
+      "pages": ["api-reference/endpoint/get", "api-reference/endpoint/create"]
     },
     {
       "group": "Group Message Endpoints",
