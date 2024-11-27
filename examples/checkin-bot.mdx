@@ -26,4 +26,112 @@ Here's a complete Express.js server implementation that:
 
 
 
+```javascript checkin-bot.js
+import express from "express";
+import fetch from "node-fetch";
+const app = express();
+const port = 3333;
+
+// Environment variables for API keys
+const API_KEY = YOUR_API_KEY;
+const API_SECRET = YOUR_API_SECRET;
+const ACCOUNT_ID = YOUR_ACCOUNT_ID;
+const FROM_NUMBER = YOUR_FROM_NUMBER;
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Store for received messages
+let receivedMessages = [];
+
+// Helper function to send WhatsApp message
+async function sendWhatsAppMessage(to, content) {
+  console.log(`[WhatsApp] Sending message to ${to}:`, content);
+  const options = {
+    method: "POST",
+    headers: {
+      "X-API-Key": API_KEY,
+      "X-API-Secret": API_SECRET,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      content,
+      from: FROM_NUMBER,
+      to,
+      service: "whatsapp",
+    }),
+  };
+
+  try {
+    const response = await fetch(
+      `https://api.a1base.com/v1/messages/individual/${ACCOUNT_ID}/send`,
+      options
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API request failed: ${errorText}`);
+    }
+
+    const result = await response.json();
+    console.log("[WhatsApp] Message sent successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("[WhatsApp] Error sending message:", error);
+    throw error;
+  }
+}
+
+// Endpoint to send reminder
+app.post("/send-reminder", async (req, res) => {
+  console.log("[Reminder] Received request:", req.body);
+  const { phoneNumber } = req.body;
+
+  if (!phoneNumber) {
+    return res.status(400).json({ error: "Phone number is required" });
+  }
+
+  try {
+    const reminderMessage = "Hey! 👋 What did you accomplish today?";
+    const response = await sendWhatsAppMessage(phoneNumber, reminderMessage);
+    res.json({
+      success: true,
+      messageId: response.messageId
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to send reminder" });
+  }
+});
+
+// Endpoint to receive WhatsApp replies
+app.post("/receive-message", (req, res) => {
+  console.log("[Receive] Incoming message:", req.body);
+  const { from, content, timestamp } = req.body;
+
+  if (!from || !content) {
+    return res.status(400).json({ error: "From and content are required" });
+  }
+
+  const message = {
+    from,
+    content,
+    timestamp: timestamp || new Date().toISOString()
+  };
+
+  receivedMessages.push(message);
+  console.log("[Receive] Stored new message:", message);
+  
+  res.json({ success: true });
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`[Server] WhatsApp reminder app running at http://localhost:${port}`);
+  if (!API_KEY || !API_SECRET || !ACCOUNT_ID || !FROM_NUMBER) {
+    console.warn("[Server] Warning: Missing environment variables for WhatsApp integration");
+  }
+});
+
+```
+
 
