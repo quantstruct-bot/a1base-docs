@@ -53,10 +53,14 @@
       "group": "Get Started",
       "pages": ["introduction", "quickstart", "spam-and-quality-checks"]
     },
-    
+
     {
-      "group": "💡 Examples",
-      "pages": ["examples/life-coach", "examples/checkin-bot"]
+      "group": "💡 Quick Examples",
+      "pages": ["examples/checkin-bot", "examples/life-coach"]
+    },
+    {
+      "group": "💻 Working App Examples",
+      "pages": ["examples/checkin-bot", "examples/life-coach"]
     },
     {
       "group": "API Documentation",
