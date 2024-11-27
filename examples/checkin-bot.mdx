@@ -1,30 +1,37 @@
 ---
-title: "AI Checkin Bot"
-description: "Check in on people and see what work they've done"
+title: "AI Check-in Bot"
+description: "Build a WhatsApp bot that tracks team progress and daily accomplishments"
 icon: "list-check"
 ---
 
 ## Introduction
 
-This guide demonstrates how to build a simple WhatsApp bot using A1Base that helps track daily accomplishments, similar to a standup meeting. The bot sends daily reminders and collects responses from users.
+Learn how to create a WhatsApp bot that automates daily stand-up meetings using A1Base. This bot streamlines team communication by sending scheduled check-in messages and collecting responses from team members.
+
+### Key Features
+
+- Automated daily reminders via WhatsApp
+- Response collection and storage
+- Easy integration with existing workflows
+- Customizable check-in questions
+- Team progress tracking
 
 ### Use Cases
 
-A standup coach bot can help with:
-- Daily progress tracking
-- Team accountability
-- Remote team coordination
-- Building consistent reflection habits
-- Asynchronous status updates
+Perfect for teams that want to:
+- Track daily accomplishments efficiently
+- Maintain team accountability remotely
+- Coordinate across different time zones
+- Build consistent reflection habits
+- Replace synchronous stand-up meetings
+- Document progress asynchronously
 
 ## Implementation
 
-Here's a complete Express.js server implementation that:
-1. Sends WhatsApp reminders asking about daily accomplishments
-2. Receives and stores responses
-3. Manages message handling through A1Base's API
-
-
+Below is a complete Express.js implementation that demonstrates how to:
+1. Schedule and send automated WhatsApp check-in messages
+2. Process and store team member responses
+3. Manage message handling through the A1Base API
 
 ```javascript checkin-bot.js
 import express from "express";

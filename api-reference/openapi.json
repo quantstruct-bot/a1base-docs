@@ -90,20 +90,11 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "sid": {
+                    "messageId": {
                       "type": "string"
                     },
-                    "date_created": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "date_updated": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "date_sent": {
-                      "type": "string",
-                      "format": "date-time"
+                    "accountId": {
+                      "type": "string"
                     },
                     "to": {
                       "type": "string"
@@ -115,6 +106,17 @@
                       "type": "string"
                     },
                     "status": {
+                      "type": "string",
+                      "enum": ["queued", "sent"]
+                    },
+                    "date_created": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "direction": {
+                      "type": "string"
+                    },
+                    "attachment_uri": {
                       "type": "string"
                     }
                   }
@@ -157,7 +159,7 @@
             }
           },
           {
-            "name": "X-API-Secret", 
+            "name": "X-API-Secret",
             "in": "header",
             "required": true,
             "schema": {
@@ -171,7 +173,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["content", "service"],
+                "required": ["content", "thread_id", "service"],
                 "properties": {
                   "content": {
                     "type": "string",
@@ -180,6 +182,10 @@
                   "attachment_uri": {
                     "type": "string",
                     "description": "Optional file/media attachment"
+                  },
+                  "thread_id": {
+                    "type": "string",
+                    "description": "ID of the chat thread"
                   },
                   "service": {
                     "type": "string",
@@ -244,7 +250,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ValidationError" 
+                  "$ref": "#/components/schemas/ValidationError"
                 }
               }
             }
@@ -298,51 +304,63 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "chat_id": {
-                      "type": "string"
-                    },
-                    "chat_name": {
-                      "type": "string"
-                    },
-                    "participants": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "account_id": {
-                      "type": "string"
-                    },
-                    "message_id": {
-                      "type": "string"
-                    },
-                    "to": {
-                      "type": "string"
-                    },
-                    "from": {
-                      "type": "string"
-                    },
-                    "body": {
-                      "type": "string"
-                    },
                     "status": {
                       "type": "string",
-                      "enum": ["queued", "sent"]
+                      "enum": ["success"]
                     },
-                    "date_created": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "direction": {
-                      "type": "string"
-                    },
-                    "attachment_uri": {
-                      "type": "string"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "chat_id": {
+                          "type": "string"
+                        },
+                        "chat_name": {
+                          "type": "string"
+                        },
+                        "participants": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "account_id": {
+                          "type": "string"
+                        },
+                        "message_id": {
+                          "type": "string"
+                        },
+                        "to": {
+                          "type": "string"
+                        },
+                        "from": {
+                          "type": "string"
+                        },
+                        "body": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": ["queued", "sent"]
+                        },
+                        "date_created": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "direction": {
+                          "type": "string"
+                        },
+                        "attachment_uri": {
+                          "type": "string"
+                        }
+                      }
                     }
                   }
                 }
               }
             }
+          },
+          "404": {
+            "description": "Message not found"
           },
           "422": {
             "description": "Validation Error",
@@ -353,6 +371,341 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/messages/threads/{accountId}/get-recent/{threadId}": {
+      "get": {
+        "summary": "Get Recent Thread Messages",
+        "description": "Get the 5 most recent messages from a thread",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "threadId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Secret",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recent messages retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["success"]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Thread not found"
+          }
+        }
+      }
+    },
+    "/messages/threads/{accountId}/get-details/{threadId}": {
+      "get": {
+        "summary": "Get Thread Details",
+        "description": "Get details for a specific thread",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "threadId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Secret",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thread details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["success"]
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "account_id": {
+                          "type": "string"
+                        },
+                        "chat_id": {
+                          "type": "string"
+                        },
+                        "chat_name": {
+                          "type": "string"
+                        },
+                        "participants": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Thread not found"
+          }
+        }
+      }
+    },
+    "/messages/threads/{accountId}/get-all": {
+      "get": {
+        "summary": "Get All Threads",
+        "description": "Get all threads for an account",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Secret",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All threads retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["success"]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No threads found"
+          }
+        }
+      }
+    },
+    "/messages/threads/{accountId}/get-all/{phone_number}": {
+      "get": {
+        "summary": "Get All Threads by Phone Number",
+        "description": "Get all threads for an account filtered by phone number",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phone_number",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Secret",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Threads retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["success"]
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No threads found"
+          }
+        }
+      }
+    },
+    "/whatsapp/incoming": {
+      "post": {
+        "summary": "Receive WhatsApp Message",
+        "description": "Webhook endpoint for receiving incoming WhatsApp messages",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["secret_key"],
+                "properties": {
+                  "secret_key": {
+                    "type": "string"
+                  },
+                  "external_thread_id": {
+                    "type": "string"
+                  },
+                  "external_message_id": {
+                    "type": "string"
+                  },
+                  "chat_type": {
+                    "type": "string",
+                    "enum": ["group", "individual", "broadcast"]
+                  },
+                  "content": {
+                    "type": "string"
+                  },
+                  "sender_name": {
+                    "type": "string"
+                  },
+                  "sender_number": {
+                    "type": "string"
+                  },
+                  "participants": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "a1_account_number": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message received successfully"
+          },
+          "403": {
+            "description": "Invalid secret key"
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }

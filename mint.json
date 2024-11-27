@@ -88,7 +88,31 @@
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "Individual Message Endpoints",
+      "pages": [
+        "api-reference/endpoint/get",
+        "api-reference/endpoint/create",
+        "api-reference/endpoint/delete"
+      ]
+    },
+    {
+      "group": "Group Message Endpoints",
+      "pages": [
+        
+        "api-reference/group-messages/create",
+        "api-reference/group-messages/get"
+      ]
+    },
+    {
+      "group": "Thread Endpoints",
+      "pages": [
+        "api-reference/endpoint/get",
+        "api-reference/endpoint/create",
+        "api-reference/endpoint/delete"
+      ]
+    },
+    {
+      "group": "Webhook",
       "pages": [
         "api-reference/endpoint/get",
         "api-reference/endpoint/create",
