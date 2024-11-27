@@ -41,7 +41,7 @@
       "icon": "book-open-cover",
       "url": "https://docs.a1base.com"
     },
-    
+
     {
       "name": "Support",
       "icon": "envelope",
@@ -51,11 +51,7 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "introduction",
-        "quickstart",
-        "development"
-      ]
+      "pages": ["introduction", "quickstart", "development"]
     },
     {
       "group": "Essentials",
@@ -67,25 +63,18 @@
         "essentials/navigation",
         "essentials/reusable-snippets"
       ]
-    },    {
+    },
+    {
       "group": "💡 Examples",
-      "pages": [
-        "examples/life-coach",
-        "examples/checkin-bot"
-        
-      ]
+      "pages": ["examples/life-coach", "examples/checkin-bot"]
     },
     {
       "group": "API Documentation",
-      "pages": [
-        "api-reference/introduction"
-      ]
+      "pages": ["api-reference/introduction"]
     },
     {
       "group": "NodeJS",
-      "pages": [
-        "node-js/introduction"
-      ]
+      "pages": ["node-js/introduction"]
     },
     {
       "group": "Individual Message Endpoints",
@@ -97,27 +86,20 @@
     },
     {
       "group": "Group Message Endpoints",
-      "pages": [
-        
-        "api-reference/group-messages/create",
-        "api-reference/group-messages/get"
-      ]
+      "pages": ["api-reference/group-messages/create"]
     },
     {
       "group": "Thread Endpoints",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "api-reference/threads/get-all",
+        "api-reference/threads/get-by-phone",
+        "api-reference/threads/get-details",
+        "api-reference/threads/get-recent"
       ]
     },
     {
       "group": "Webhook",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
-      ]
+      "pages": ["api-reference/webhook/webhook"]
     }
   ],
   "footerSocials": {

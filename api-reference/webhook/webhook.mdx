@@ -1,0 +1,50 @@
+---
+title: "Webhook"
+openapi: "POST /whatsapp/incoming"
+---
+
+The webhook endpoint allows you to receive incoming WhatsApp messages in real-time. When a message is received, it will be sent to your configured webhook URL with the following payload structure.
+
+### Webhook Payload
+
+<ParamField body="secret_key" type="string" required>
+  The secret key to authenticate the webhook request
+</ParamField>
+
+<ParamField body="external_thread_id" type="string">
+  Unique identifier for the WhatsApp chat thread
+</ParamField>
+
+<ParamField body="external_message_id" type="string">
+  Unique identifier for the specific message
+</ParamField>
+
+<ParamField body="chat_type" type="string">
+  Type of chat - can be "group", "individual", or "broadcast"
+</ParamField>
+
+<ParamField body="content" type="string">
+  The message content/text
+</ParamField>
+
+<ParamField body="sender_name" type="string">
+  Name of the message sender
+</ParamField>
+
+<ParamField body="sender_number" type="string">
+  Phone number of the message sender
+</ParamField>
+
+<ParamField body="participants" type="array">
+  Array of phone numbers of chat participants
+</ParamField>
+
+<ParamField body="a1_account_number" type="string">
+  Your A1Base account identifier
+</ParamField>
+
+### Response Codes
+
+- `200`: Message received successfully
+- `403`: Invalid secret key
+- `500`: Internal server error
