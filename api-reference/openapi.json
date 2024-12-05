@@ -173,7 +173,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["content", "thread_id", "service"],
+                "required": ["content", "thread_id", "service", "from"],
                 "properties": {
                   "content": {
                     "type": "string",
@@ -182,6 +182,10 @@
                   "attachment_uri": {
                     "type": "string",
                     "description": "Optional file/media attachment"
+                  },
+                  "from": {
+                    "type": "string",
+                    "description": "Sender phone number"
                   },
                   "thread_id": {
                     "type": "string",
