@@ -12,15 +12,17 @@ Creating an AI life coach bot can help provide personalized guidance and support
 
 A life coach bot can assist with:
 
-- Goal setting and tracking
-- Daily motivation and accountability 
-- Basic emotional support
-- Habit formation guidance
-- Time management suggestions
+* Goal setting and tracking
 
+* Daily motivation and accountability
+
+* Basic emotional support
+
+* Habit formation guidance
+
+* Time management suggestions
 
 ### Code
-
 
 ```javascript
 import express from "express";
@@ -46,7 +48,7 @@ const coachingQuestions = [
 const API_KEY = YOUR_API_KEY;
 const API_SECRET = YOUR_API_SECRET;
 const ACCOUNT_ID = YOUR_ACCOUNT_ID;
-const FROM_NUMBER = YOUR_FROM_NUMBER;
+const FROM_NUMBER = YOUR_FROM_NUMBER; // e.g +61400111222
 
 // Middleware to parse JSON bodies
 app.use(express.json());

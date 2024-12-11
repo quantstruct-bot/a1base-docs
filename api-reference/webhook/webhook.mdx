@@ -11,15 +11,15 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
   The secret key to authenticate the webhook request
 </ParamField>
 
-<ParamField body="external_thread_id" type="string">
-  Unique identifier for the WhatsApp chat thread
+<ParamField body="thread_id" type="string">
+  Unique identifier for the chat thread
 </ParamField>
 
-<ParamField body="external_message_id" type="string">
+<ParamField body="message_id" type="string">
   Unique identifier for the specific message
 </ParamField>
 
-<ParamField body="chat_type" type="string">
+<ParamField body="thread_type" type="string">
   Type of chat - can be "group", "individual", or "broadcast"
 </ParamField>
 
@@ -45,6 +45,8 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
 
 ### Response Codes
 
-- `200`: Message received successfully
-- `403`: Invalid secret key
-- `500`: Internal server error
+* `200`: Message received successfully
+
+* `403`: Invalid secret key
+
+* `500`: Internal server error

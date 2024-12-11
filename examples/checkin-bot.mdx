@@ -10,27 +10,40 @@ Learn how to create a WhatsApp bot that automates daily stand-up meetings using 
 
 ### Key Features
 
-- Automated daily reminders via WhatsApp
-- Response collection and storage
-- Easy integration with existing workflows
-- Customizable check-in questions
-- Team progress tracking
+* Automated daily reminders via WhatsApp
+
+* Response collection and storage
+
+* Easy integration with existing workflows
+
+* Customizable check-in questions
+
+* Team progress tracking
 
 ### Use Cases
 
 Perfect for teams that want to:
-- Track daily accomplishments efficiently
-- Maintain team accountability remotely
-- Coordinate across different time zones
-- Build consistent reflection habits
-- Replace synchronous stand-up meetings
-- Document progress asynchronously
+
+* Track daily accomplishments efficiently
+
+* Maintain team accountability remotely
+
+* Coordinate across different time zones
+
+* Build consistent reflection habits
+
+* Replace synchronous stand-up meetings
+
+* Document progress asynchronously
 
 ## Implementation
 
 Below is a complete Express.js implementation that demonstrates how to:
+
 1. Schedule and send automated WhatsApp check-in messages
+
 2. Process and store team member responses
+
 3. Manage message handling through the A1Base API
 
 ```javascript checkin-bot.js
@@ -43,7 +56,7 @@ const port = 3333;
 const API_KEY = YOUR_API_KEY;
 const API_SECRET = YOUR_API_SECRET;
 const ACCOUNT_ID = YOUR_ACCOUNT_ID;
-const FROM_NUMBER = YOUR_FROM_NUMBER;
+const FROM_NUMBER = YOUR_FROM_NUMBER; // e.g +61400111222
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -140,5 +153,3 @@ app.listen(port, () => {
 });
 
 ```
-
-
