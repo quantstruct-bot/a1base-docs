@@ -20,34 +20,40 @@ Learn how to update your docs locally and deploy them to the public.
     To start using A1Base you need an API key and secret. You can get these by
     booking an onboarding call at https://cal.com/team/a1base/a1base-book-a-demo or
     contacting the founders at pasha@a1base.com or pennie@a1base.com.
-
   </Accordion>
+
   <Accordion icon="rectangle-terminal" title="Set up your key variables">
     ```javascript
     const API_KEY = YOUR_API_KEY; 
     const API_SECRET = YOUR_API_SECRET;
     const ACCOUNT_ID = YOUR_ACCOUNT_ID; 
     const FROM_NUMBER = YOUR_FROM_NUMBER; //e.g. +12345678900
-```
+    ```
   </Accordion>
 </AccordionGroup>
 
 ### 2. Send your first message
 
 <AccordionGroup>
-
-<Accordion icon="message-bot" title="Send your first message">
-  ```bash
-  curl --request GET \
-    --url https://api.a1base.com/v1/messages/individual/{accountId}/get-details/{messageId} \
+  <Accordion icon="message-bot" title="Send your first message">
+    ```bash
+    curl --location 'https://api.a1base.com/v1/messages/individual/{accountId}/send' \
+    --header 'Content-Type: application/json' \
     --header 'X-API-Key: <api-key>' \
     --header 'X-API-Secret: <api-key>'
-  ```
-</Accordion>
-<Accordion icon="rocket" title="Build your AI Agent logic around it">
-  Now it's time to build your AI Agent logic around it! We just send the message and store
-  it safely in our database, but you can build your logic around it.
-</Accordion>
+    --data '{
+        "content": "Hello World!",
+        "attachment_uri": "",
+        "from": "+1222333444",      
+        "to": "+1555666777", 
+        "service": "whatsapp"
 
+    }'
+    ```
+  </Accordion>
+
+  <Accordion icon="rocket" title="Build your AI Agent logic around it">
+    Now it's time to build your AI Agent logic around it! We just send the message and store
+    it safely in our database, but you can build your logic around it.
+  </Accordion>
 </AccordionGroup>
-
