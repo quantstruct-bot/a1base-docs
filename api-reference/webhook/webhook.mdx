@@ -7,10 +7,6 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
 
 ### Webhook Payload
 
-<ParamField body="secret_key" type="string" required>
-  The secret key to authenticate the webhook request
-</ParamField>
-
 <ParamField body="thread_id" type="string">
   Unique identifier for the chat thread
 </ParamField>
@@ -27,16 +23,20 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
   The message content/text
 </ParamField>
 
+<ParamField body="sender_number" type="string">
+  Phone number of the message sender. e.g. "61400123456"
+</ParamField>
+
 <ParamField body="sender_name" type="string">
   Name of the message sender
 </ParamField>
 
-<ParamField body="sender_number" type="string">
-  Phone number of the message sender
-</ParamField>
-
 <ParamField body="a1_account_number" type="string">
   Your A1Base account identifier
+</ParamField>
+
+<ParamField body="timestamp" type="string">
+  A timestamp in ISO 8601 format. e.g. "2024-12-20T00:48:15+00:00"
 </ParamField>
 
 ### Response Codes
