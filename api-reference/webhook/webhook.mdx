@@ -35,7 +35,11 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
   Name of the message sender
 </ParamField>
 
-<ParamField body="a1_account_number" type="string">
+<ParamField body="a1_account_number" type="string" deprecated={true}>
+  Your A1Base account identifier
+</ParamField>
+
+<ParamField body="a1_account_id" type="string">
   Your A1Base account identifier
 </ParamField>
 
