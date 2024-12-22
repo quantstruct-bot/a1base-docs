@@ -53,11 +53,11 @@
 
     {
       "group": "💡 Quick Examples",
-      "pages": ["examples/checkin-bot", "examples/life-coach"]
+      "pages": ["examples/checkin-bot", "examples/life-coach", "examples/chat-agent"]
     },
     {
       "group": "💻 Working App Examples",
-      "pages": ["examples/checkin-bot", "examples/life-coach"]
+      "pages": ["examples/checkin-bot", "examples/life-coach", "examples/chat-agent"]
     },
     {
       "group": "API Documentation",
