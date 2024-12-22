@@ -26,11 +26,13 @@ Learn how to create a WhatsApp bot that acts similar to ChatGPT using A1Base. Th
 
 Below is a complete Express.js implementation that demonstrates how to:
 
-1. Schedule and send automated WhatsApp check-in messages
+1. Listen to WhatsApp messages using webhooks
 
-2. Process and store team member responses
+2. Process and store responses split by threads
 
-3. Manage message handling through the A1Base API
+3. Generate AI responses with the OpenAI API using the full conversation context
+
+4. Send responses to individual and group chats with the A1Base API
 
 ```typescript checkin-bot.js
 import * as dotenv from "dotenv";
