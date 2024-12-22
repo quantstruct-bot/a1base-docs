@@ -1,41 +1,21 @@
 ---
-title: "AI Chat Bot"
-description: "Build a WhatsApp bot that acts similar to ChatGPT."
-icon: "message-dots"
+title: "AI Sales Agent"
+description: "Build an AI sales agent for your company or service."
 ---
 
 ## Introduction
 
-Learn how to create a WhatsApp bot that acts similar to ChatGPT using A1Base. This simple bot demonstrates the capabilities of A1Base as an identity layer for AI agents.
-
-### Key Features
-
-* Uses conversation history to produce contextually relevant responses
-
-* Responds to both individual and group messages
-
-* Message collection and storage
+Learn how to create an AI sales agent over WhatsApp using A1Base. You can adapt this sales agent template for your own product.
 
 ### Use Cases
 
-* Answering questions and providing conversation similar to ChatGPT
+* Answering questions about a product or service
 
-* Boilerplate for other A1Base chat-based agents
+* Lead nurturing by directing users towards a sales CTA (e.g. product demo)
 
 ## Implementation
 
-Below is a complete Express.js implementation that demonstrates how to:
-
-1. Listen to incoming WhatsApp messages with webhooks
-
-2. Process and store responses split by threads
-
-3. Generate AI responses with the OpenAI API using the full conversation context
-
-4. Send responses to individual and group chats with the A1Base API
-
 ```typescript checkin-bot.js
-import * as dotenv from "dotenv";
 import express, { Express, Request, Response } from "express";
 import OpenAI from "openai";
 
@@ -64,6 +44,103 @@ interface ThreadMessage {
   timestamp: string;
 }
 
+const PROMPT_OVERVIEW = `
+You are an AI sales agent for a SaaS platform called "A1Base".
+
+A1Base enhances AI agents with real-world capabilities like phone numbers, email, and messaging, enabling autonomous interactions beyond chat interfaces.
+Through our API, AI agents can join messaging platforms, handle communications, and operate independently while maintaining full control of your system.
+
+At A1Base, we take message quality and compliance seriously.
+A1Base helps ensure spam and quality checks to prevent misuse or misbehaviour of your agents.
+Every message sent through our platform undergoes rigorous automated checks before delivery to ensure it meets our standards and protects both senders and recipients.
+`;
+
+const PROMPT_CTA = `
+You should direct the user to request a demo of the product.
+
+https://cal.com/team/a1base/a1base-book-a-demo
+`;
+
+const PROMPT_FAQ = `
+1. What platforms are currently supported with A1Base?
+WhatsApp is currently supported.
+Please contact the founders to access other integrations like Discord, Telegram, Email, and more.
+
+2. What is the cost of A1Base?
+Please contact the founders for pricing.
+
+3. What are the spam and quality checks?
+
+a) Spam detection:
+Messages are analyzed using advanced algorithms to detect:
+
+Suspicious patterns and repetitive content
+Known spam triggers and phrases
+Unusual sending patterns or frequencies
+Mass messaging attempts
+
+b) Compliance Checks
+
+We verify that messages adhere to:
+
+Platform-specific messaging policies
+Regional communication regulations
+Data protection requirements
+Opt-out and consent rules
+
+c) Quality Standards
+
+Each message is evaluated for:
+
+Proper formatting and structure
+Language quality and clarity
+Appropriate content and tone
+Media file integrity (for attachments)
+`;
+
+const PROMPT_MORE_RESOURCES = `
+If the user is interested in learning more about A1Base, they can visit the website at: https://a1base.com/.
+
+If the user is looking for developer documentation, they can visit the website at: https://docs.a1base.com/introduction
+
+If the user is still unsure, they can book a call with the founders at: https://cal.com/team/a1base/a1base-book-a-demo
+`;
+
+const PROMPT_CONTACT_INFORMATION = `
+You can contact the founders at: https://cal.com/team/a1base/a1base-book-a-demo
+`;
+
+const getSystemPrompt = (userName: string) => `
+You are an AI sales agent. Your goal is to sell a user towards a sales CTA, but don't be too pushy.
+Start with a friendly greeting about the company and provide the user with options for how they want to proceed.
+
+When responding with links, just provide the URL directly. Don't wrap it in Markdown.
+
+Do not respond with information that you do not have. If you are unsure, say you don't know and direct the user to the company
+contact information. ${PROMPT_CONTACT_INFORMATION}
+
+Keep your messages relatively short as this conversation is occuring over WhatsApp.
+If the user asks for a lot of information, provide a summary and ask if the user would like to know more.
+
+The user's WhatsApp name is ${userName}. You should address the user by name when appropriate.
+
+<OVERVIEW>
+${PROMPT_OVERVIEW}
+</OVERVIEW>
+
+<CTA>
+${PROMPT_CTA}
+</CTA>
+
+<FAQ>
+${PROMPT_FAQ}
+</FAQ>
+
+<MORE_RESOURCES>
+${PROMPT_MORE_RESOURCES}
+</MORE_RESOURCES>
+`;
+
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
 });
@@ -71,16 +148,12 @@ const openai = new OpenAI({
 // Store messages by thread ID
 const messagesByThread = new Map<string, ThreadMessage[]>();
 
-const getSystemPrompt = (userName: string) => `
-You are a friendly AI chat assistant. Keep your responses concise and engaging.
-
-The user's name is ${userName}.
-You should address them by name in the first message, and in future messages where appropriate (but not too often, keep it natural).
-
-Keep messages relatively short as this conversation is occurring over WhatsApp.
-
-Try to mirror their mannerisms. If they use lowercase, you should too. Etc.
-`;
+const saveMessage = (threadId: string, message: ThreadMessage) => {
+  const threadMessages = messagesByThread.get(threadId) || [];
+  threadMessages.push(message);
+  messagesByThread.set(threadId, threadMessages);
+  console.log(`[Save] Stored new message in thread:`, threadId, message);
+};
 
 async function generateAgentResponse(threadId: string): Promise<string> {
   const threadMessages = messagesByThread.get(threadId) || [];
@@ -92,7 +165,6 @@ async function generateAgentResponse(threadId: string): Promise<string> {
     content: msg.content,
   }));
 
-  // Get the user's name from the thread
   const userName =
     [...threadMessages]
       .reverse()
@@ -112,14 +184,6 @@ async function generateAgentResponse(threadId: string): Promise<string> {
     "Sorry, I couldn't generate a response"
   );
 }
-
-// Save message locally
-const saveMessage = (threadId: string, message: ThreadMessage) => {
-  const threadMessages = messagesByThread.get(threadId) || [];
-  threadMessages.push(message);
-  messagesByThread.set(threadId, threadMessages);
-  console.log(`[Save] Stored new message in thread:`, threadId, message);
-};
 
 // Helper function to send individual WhatsApp message
 async function sendIndividualWhatsAppMessage(
@@ -228,9 +292,9 @@ app.post(
       a1_account_id,
       timestamp,
     } = req.body as WhatsAppRequestBody;
-
-    // Patch some issues with group messages and phone numbers
     sender_number = "+" + sender_number;
+
+    // Patch a bug with group messages
     if (thread_type === "group" && sender_number === "+") {
       sender_number = AGENT_NUMBER;
     }
