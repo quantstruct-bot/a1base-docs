@@ -7,17 +7,17 @@
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#4169e1",
-    "light": "#7492ed",
-    "dark": "#1f47bf",
+    "primary": "#FC9E40",
+    "light": "#fdb968",
+    "dark": "#e88520",
     "anchors": {
-      "from": "#4169e1",
-      "to": "#1f47bf"
+      "from": "#FC9E40",
+      "to": "#53CB98"
     }
   },
   "topbarLinks": [
     {
-      "name": "Support",
+      "name": "Support", 
       "url": "mailto:pennie@a1base.com"
     }
   ],
@@ -27,7 +27,7 @@
   },
   "tabs": [
     {
-      "name": "API Reference", 
+      "name": "API Reference",
       "url": "api-reference"
     }
     
@@ -41,7 +41,7 @@
 
     {
       "name": "Support",
-      "icon": "envelope",
+      "icon": "envelope", 
       "url": "mailto:pennie@a1base.com"
     }
   ],
