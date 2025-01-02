@@ -30,7 +30,6 @@
       "name": "API Reference",
       "url": "api-reference"
     }
-    
   ],
   "anchors": [
     {
@@ -38,7 +37,6 @@
       "icon": "book-open-cover",
       "url": "https://docs.a1base.com"
     },
-
     {
       "name": "Support",
       "icon": "envelope", 
@@ -50,7 +48,6 @@
       "group": "🚀 Get Started",
       "pages": ["introduction", "quickstart", "spam-and-quality-checks"]
     },
-
     {
       "group": "💡 Quick Examples",
       "pages": ["examples/checkin-bot", "examples/life-coach", "examples/chat-agent", "examples/sales-agent"]
