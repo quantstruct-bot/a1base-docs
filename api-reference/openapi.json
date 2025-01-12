@@ -656,45 +656,53 @@
     "/whatsapp/incoming": {
       "post": {
         "summary": "Receive WhatsApp Message",
-        "description": "Webhook endpoint for receiving incoming WhatsApp messages",
+        "description": "Webhook endpoint for receiving incoming WhatsApp messages in real-time",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["secret_key"],
+                "required": ["thread_id", "message_id", "thread_type", "content", "sender_number", "sender_name", "a1_account_id", "timestamp"],
                 "properties": {
-                  "secret_key": {
-                    "type": "string"
-                  },
-                  "external_thread_id": {
-                    "type": "string"
-                  },
-                  "external_message_id": {
-                    "type": "string"
-                  },
-                  "chat_type": {
+                  "thread_id": {
                     "type": "string",
-                    "enum": ["group", "individual", "broadcast"]
+                    "description": "Unique identifier for the chat thread"
+                  },
+                  "message_id": {
+                    "type": "string",
+                    "description": "Unique identifier for the specific message"
+                  },
+                  "thread_type": {
+                    "type": "string",
+                    "enum": ["group", "individual", "broadcast"],
+                    "description": "Type of chat"
                   },
                   "content": {
-                    "type": "string"
-                  },
-                  "sender_name": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": ["group", "individual", "broadcast"],
+                    "description": "The message content/text"
                   },
                   "sender_number": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Phone number of the message sender"
                   },
-                  "participants": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
+                  "sender_name": {
+                    "type": "string",
+                    "description": "Name of the message sender"
                   },
                   "a1_account_number": {
-                    "type": "string"
+                    "type": "string",
+                    "deprecated": true,
+                    "description": "Your A1Base account identifier"
+                  },
+                  "a1_account_id": {
+                    "type": "string",
+                    "description": "Your A1Base account identifier"
+                  },
+                  "timestamp": {
+                    "type": "string",
+                    "description": "A timestamp in ISO 8601 format"
                   }
                 }
               }
