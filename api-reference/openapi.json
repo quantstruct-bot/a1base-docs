@@ -680,7 +680,6 @@
                   },
                   "content": {
                     "type": "string",
-                    "enum": ["group", "individual", "broadcast"],
                     "description": "The message content/text"
                   },
                   "sender_number": {

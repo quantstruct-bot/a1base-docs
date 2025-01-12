@@ -47,24 +47,26 @@ Below is a complete Express.js implementation that demonstrates how to:
 3. Manage message handling through the A1Base API
 
 ```typescript checkin-bot.ts
-import type { Express, Request, Response } from "express";
-import express from "express";
+import { A1BaseAPI, type WhatsAppIncomingData } from "a1base-node";
+import * as dotenv from "dotenv";
+import express, { Express, Request, Response } from "express";
 
 const AGENT_NUMBER = "YOUR_AGENT_NUMBER"; //e.g. +12345678900
 const API_KEY = "YOUR_A1BASE_API_KEY";
 const API_SECRET = "YOUR_A1BASE_API_SECRET";
 const ACCOUNT_ID = "YOUR_A1BASE_ACCOUNT_ID";
 
-interface WhatsAppRequestBody {
-  thread_id: string;
-  message_id: string;
-  thread_type: string;
-  content: string;
-  sender_number: string;
-  sender_name: string;
-  a1_account_id: string;
-  timestamp: string;
-}
+// Initialize A1Base client
+const credentials = {
+  apiKey: API_KEY,
+  apiSecret: API_SECRET,
+};
+const client = new A1BaseAPI({
+  credentials
+});
+
+// Store messages by thread ID
+const messagesByThread = new Map<string, ThreadMessage[]>();
 
 interface ThreadMessage {
   message_id: string;
@@ -75,13 +77,10 @@ interface ThreadMessage {
 }
 
 const app: Express = express();
-const port = 3334;
+const port = 3000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-
-// Store messages by thread ID
-const messagesByThread = new Map<string, ThreadMessage[]>();
 
 const saveMessage = (threadId: string, message: ThreadMessage) => {
   const threadMessages = messagesByThread.get(threadId) || [];
@@ -90,47 +89,9 @@ const saveMessage = (threadId: string, message: ThreadMessage) => {
   console.log(`[Save] Stored new message in thread:`, threadId, message);
 };
 
-// Helper function to send WhatsApp message
-async function sendWhatsAppMessage(to: string, content: string): Promise<any> {
-  console.log(`[WhatsApp] Sending message to ${to}:`, content);
-  const options = {
-    method: "POST",
-    headers: {
-      "X-API-Key": API_KEY,
-      "X-API-Secret": API_SECRET,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      content,
-      from: AGENT_NUMBER,
-      to,
-      service: "whatsapp",
-    }),
-  };
-
-  try {
-    const response = await fetch(
-      `https://api.a1base.com/v1/messages/individual/${ACCOUNT_ID}/send`,
-      options,
-    );
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`API request failed: ${errorText}`);
-    }
-
-    const result = await response.json();
-    console.log("[WhatsApp] Message sent successfully:", result);
-    return result;
-  } catch (error) {
-    console.error("[WhatsApp] Error sending message:", error);
-    throw error;
-  }
-}
-
 // Endpoint to send reminder
 app.post(
-  "/send-reminder",
+  "/whatsapp/send-reminder",
   async (req: Request, res: Response): Promise<any> => {
     console.log("[Reminder] Received request:", req.body);
     const { phoneNumber } = req.body;
@@ -141,12 +102,18 @@ app.post(
 
     try {
       const reminderMessage = "Hey! 👋 What did you accomplish today?";
-      const response = await sendWhatsAppMessage(phoneNumber, reminderMessage);
+      const response = await client.sendIndividualMessage(ACCOUNT_ID, {
+        content: reminderMessage,
+        from: AGENT_NUMBER,
+        to: phoneNumber,
+        service: "whatsapp",
+      });
       res.json({
         success: true,
         messageId: response.messageId,
       });
     } catch (error) {
+      console.error("[Reminder] Error sending reminder:", error);
       res.status(500).json({ error: "Failed to send reminder" });
     }
   },
@@ -154,7 +121,7 @@ app.post(
 
 // Endpoint to receive WhatsApp replies
 app.post(
-  "/receive-message",
+  "/whatsapp/receive-message",
   async (req: Request, res: Response): Promise<any> => {
     console.log("[Receive] Incoming message:", req.body);
 
@@ -167,8 +134,21 @@ app.post(
       sender_name,
       a1_account_id,
       timestamp,
-    } = req.body as WhatsAppRequestBody;
+    } = req.body as WhatsAppIncomingData;
     sender_number = "+" + sender_number;
+
+    if (
+      !thread_id ||
+      !message_id ||
+      !content ||
+      !sender_number ||
+      !sender_name
+    ) {
+      console.error("[Receive] Invalid request body:", req.body);
+      return res
+        .status(400)
+        .json({ error: "Missing required fields in request body" });
+    }
 
     // Ignore messages from self
     if (sender_number === AGENT_NUMBER) {
@@ -186,10 +166,12 @@ app.post(
     });
 
     try {
-      await sendWhatsAppMessage(
-        sender_number,
-        "Nice! We've recorded your response! ✅",
-      );
+      await client.sendIndividualMessage(ACCOUNT_ID, {
+        content: "Nice! We've recorded your response! ✅",
+        from: AGENT_NUMBER,
+        to: sender_number,
+        service: "whatsapp",
+      });
     } catch (error) {
       console.error("[Receive] Error sending confirmation message:", error);
     }
@@ -207,4 +189,5 @@ app.listen(port, () => {
     );
   }
 });
+
 ```
