@@ -10,7 +10,22 @@ The group management endpoint allows you to perform various WhatsApp group opera
 * Create new groups with specified participants
 * Update group details (name, description, picture)
 * Manage participants (add, remove, promote/demote admins)
-* Handle group invites and settings
+* Handle group invites and messaging permissions
+
+### Example Request
+
+```bash
+curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+--header 'x-api-key: YOUR_API_KEY' \
+--header 'x-api-secret: YOUR_API_SECRET' \
+--header 'Content-Type: application/json' \
+--data '{
+    "action": "create",
+    "agent_number": "+1234567890",
+    "title": "New Group",
+    "participants": ["+1987654321"]
+}'
+```
 
 ### Request Body
 
@@ -63,10 +78,10 @@ The group management endpoint allows you to perform various WhatsApp group opera
   <Accordion icon="gear" title="Group Settings">
     Required for `update_settings`:
     - `setting` (string): One of:
-      - `announcement`
-      - `not_announcement` 
-      - `locked`
-      - `unlocked`
+      - `announcement`: Only admins can send messages in the group
+      - `not_announcement`: All participants can send messages in the group
+      - `locked`: Only admins can modify group settings (display picture, description, etc)
+      - `unlocked`: All participants can modify group settings
   </Accordion>
 </AccordionGroup>
 
@@ -75,125 +90,147 @@ The group management endpoint allows you to perform various WhatsApp group opera
 <AccordionGroup>
   <Accordion icon="plus" title="Create Group">
     ```bash
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "create",
         "agent_number": "+1234567890",
         "title": "Project Team",
-        "participants": ["+1987654321", "+1555012345"],
+        "participants": ["+1987654321", "+1012345678"],
         "initial_message": "Welcome to the project team group!"
-      }'
+    }'
     ```
   </Accordion>
 
   <Accordion icon="pen" title="Update Group Details">
     ```bash
     # Update Name
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "update_name",
         "agent_number": "+1234567890",
         "thread_id": "123123",
-        "name": "Project Team 2023"
-      }'
+        "name": "A1Base Project Team"
+    }'
 
     # Update Description
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "update_description",
         "agent_number": "+1234567890",
         "thread_id": "123123",
         "description": "Official group for project coordination"
-      }'
+    }'
 
     # Update Picture
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "update_picture",
         "agent_number": "+1234567890",
         "thread_id": "123123",
         "image_url": "https://example.com/group-image.jpg"
-      }'
+    }'
     ```
   </Accordion>
 
   <Accordion icon="users" title="Manage Participants">
     ```bash
     # Add Participants
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "add_participants",
         "agent_number": "+1234567890",
         "thread_id": "123123",
         "participants": ["+1555999888", "+1555777666"]
-      }'
+    }'
 
     # Remove Participants
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "remove_participants",
         "agent_number": "+1234567890",
         "thread_id": "123123",
         "participants": ["+1555999888"]
-      }'
+    }'
 
     # Promote Admin
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "promote_admin",
         "agent_number": "+1234567890",
         "thread_id": "123123",
         "participants": ["+1555777666"]
-      }'
+    }'
 
     # Demote Admin
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "demote_admin",
         "agent_number": "+1234567890",
         "thread_id": "123123",
         "participants": ["+1555777666"]
-      }'
+    }'
     ```
   </Accordion>
 
   <Accordion icon="gear" title="Other Actions">
     ```bash
     # Join Group
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "join",
         "agent_number": "+1234567890",
         "thread_id": "123123"
-      }'
+    }'
 
     # Leave Group
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "leave",
         "agent_number": "+1234567890",
         "thread_id": "123123"
-      }'
+    }'
 
-    # Update Settings (Make Announcement-only)
-    curl -X POST "https://api.example.com/group-management/account123" \
-      -H "Content-Type: application/json" \
-      -d '{
+    # Update Group Settings
+    curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management' \
+    --header 'x-api-key: YOUR_API_KEY' \
+    --header 'x-api-secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
         "action": "update_settings",
         "agent_number": "+1234567890",
         "thread_id": "123123",
         "setting": "announcement"
-      }'
+    }'
     ```
   </Accordion>
 </AccordionGroup>
