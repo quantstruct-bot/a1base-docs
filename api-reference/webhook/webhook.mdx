@@ -24,11 +24,11 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
 </ParamField>
 
 <ParamField body="content" type="string">
-  The message content/text
+  The message text content. For unsupported message types, will contain "[Unsupported Message Type]"
 </ParamField>
 
 <ParamField body="sender_number" type="string">
-  Phone number of the message sender. e.g. "61400123456"
+  Phone number of the message sender with country code. e.g. "+61400123456"
 </ParamField>
 
 <ParamField body="sender_name" type="string">
@@ -44,7 +44,92 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
 </ParamField>
 
 <ParamField body="timestamp" type="string">
-  A timestamp in ISO 8601 format. e.g. "2024-12-20T00:48:15+00:00"
+  When the message was handled on WhatsApp, in ISO 8601 format. e.g. "2024-12-20T00:48:15+00:00"
+</ParamField>
+
+<ParamField body="service" type="string">
+  The messaging service used
+</ParamField>
+
+<ParamField body="message_type" type="string">
+  Type of the message (e.g. "text", "rich_text")
+</ParamField>
+
+<ParamField body="is_from_agent" type="boolean">
+  Whether the message was sent by an agent
+</ParamField>
+
+<ParamField body="message_content" type="object">
+  The complete message content object containing all message data. Structure varies by message_type:
+
+  For message_type: "conversation" (simple text)
+  ```json
+  {
+    "text": "Hello world"
+  }
+  ```
+
+  For message_type: "extendedTextMessage" (rich text with optional quote)
+  ```json
+  {
+    "text": "This is a reply to something",
+    "quoted_message_content": "Original message that was replied to",
+    "quoted_message_sender": "61400123456"
+  }
+  ```
+
+  For message_type: "imageMessage"
+  ```json
+  {
+    "data": "base64_encoded_image_data"
+  }
+  ```
+
+  For message_type: "videoMessage"
+  ```json
+  {
+    "data": "base64_encoded_video_data"
+  }
+  ```
+
+  For message_type: "audioMessage"
+  ```json
+  {
+    "data": "base64_encoded_audio_data"
+  }
+  ```
+
+  For message_type: "reactionMessage"
+  ```json
+  {
+    "reaction": "👍"
+  }
+  ```
+
+  For message_type: "groupInviteMessage"
+  ```json
+  {
+    "groupName": "My WhatsApp Group",
+    "inviteCode": "Ab12Cd34"
+  }
+  ```
+
+  For message_type: "locationMessage"
+  ```json
+  {
+    "latitude": -33.8688,
+    "longitude": 151.2093,
+    "name": "Optional location name",
+    "address": "Optional address"
+  }
+  ```
+
+  For unsupported message types
+  ```json
+  {
+    "error": "Unsupported Message Type"
+  }
+  ```
 </ParamField>
 
 ### Response Codes

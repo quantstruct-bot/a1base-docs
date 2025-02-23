@@ -1,0 +1,199 @@
+---
+title: "Group Management"
+openapi: "POST /group-management/{accountId}"
+---
+
+The group management endpoint allows you to perform various WhatsApp group operations including creating groups, managing participants, and updating group settings.
+
+### Key Operations:
+
+* Create new groups with specified participants
+* Update group details (name, description, picture)
+* Manage participants (add, remove, promote/demote admins)
+* Handle group invites and settings
+
+### Request Body
+
+<ParamField body="action" type="string" required>
+  The operation to perform. Valid values:
+  - `create`
+  - `update_name` 
+  - `update_description`
+  - `update_picture`
+  - `add_participants`
+  - `remove_participants`
+  - `promote_admin`
+  - `demote_admin`
+  - `join`
+  - `leave`
+  - `update_settings`
+</ParamField>
+
+<ParamField body="agent_number" type="string" required>
+  The phone number initiating the action (must start with '+')
+</ParamField>
+
+<ParamField body="thread_id" type="string">
+  The group chat ID. Required for all actions except 'create'
+</ParamField>
+
+### Action-Specific Fields
+
+<AccordionGroup>
+  <Accordion icon="plus" title="Create Group">
+    Required fields for `action: "create"`:
+    - `title` (string): Group name
+    - `participants` (array): Phone numbers to add
+    - `initial_message` (string, optional): First message to send
+  </Accordion>
+
+  <Accordion icon="pen" title="Update Group Details">
+    Fields for update actions:
+    - `name` (string): New group name (`update_name`)
+    - `description` (string): New description (`update_description`) 
+    - `image_url` (string): New profile picture URL (`update_picture`)
+  </Accordion>
+
+  <Accordion icon="users" title="Manage Participants">
+    Required for participant management actions:
+    - `participants` (array): Phone numbers to modify
+    For actions: `add_participants`, `remove_participants`, `promote_admin`, `demote_admin`
+  </Accordion>
+
+  <Accordion icon="gear" title="Group Settings">
+    Required for `update_settings`:
+    - `setting` (string): One of:
+      - `announcement`
+      - `not_announcement` 
+      - `locked`
+      - `unlocked`
+  </Accordion>
+</AccordionGroup>
+
+### Example Requests
+
+<AccordionGroup>
+  <Accordion icon="plus" title="Create Group">
+    ```bash
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "create",
+        "agent_number": "+1234567890",
+        "title": "Project Team",
+        "participants": ["+1987654321", "+1555012345"],
+        "initial_message": "Welcome to the project team group!"
+      }'
+    ```
+  </Accordion>
+
+  <Accordion icon="pen" title="Update Group Details">
+    ```bash
+    # Update Name
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "update_name",
+        "agent_number": "+1234567890",
+        "thread_id": "123123",
+        "name": "Project Team 2023"
+      }'
+
+    # Update Description
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "update_description",
+        "agent_number": "+1234567890",
+        "thread_id": "123123",
+        "description": "Official group for project coordination"
+      }'
+
+    # Update Picture
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "update_picture",
+        "agent_number": "+1234567890",
+        "thread_id": "123123",
+        "image_url": "https://example.com/group-image.jpg"
+      }'
+    ```
+  </Accordion>
+
+  <Accordion icon="users" title="Manage Participants">
+    ```bash
+    # Add Participants
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "add_participants",
+        "agent_number": "+1234567890",
+        "thread_id": "123123",
+        "participants": ["+1555999888", "+1555777666"]
+      }'
+
+    # Remove Participants
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "remove_participants",
+        "agent_number": "+1234567890",
+        "thread_id": "123123",
+        "participants": ["+1555999888"]
+      }'
+
+    # Promote Admin
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "promote_admin",
+        "agent_number": "+1234567890",
+        "thread_id": "123123",
+        "participants": ["+1555777666"]
+      }'
+
+    # Demote Admin
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "demote_admin",
+        "agent_number": "+1234567890",
+        "thread_id": "123123",
+        "participants": ["+1555777666"]
+      }'
+    ```
+  </Accordion>
+
+  <Accordion icon="gear" title="Other Actions">
+    ```bash
+    # Join Group
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "join",
+        "agent_number": "+1234567890",
+        "thread_id": "123123"
+      }'
+
+    # Leave Group
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "leave",
+        "agent_number": "+1234567890",
+        "thread_id": "123123"
+      }'
+
+    # Update Settings (Make Announcement-only)
+    curl -X POST "https://api.example.com/group-management/account123" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "action": "update_settings",
+        "agent_number": "+1234567890",
+        "thread_id": "123123",
+        "setting": "announcement"
+      }'
+    ```
+  </Accordion>
+</AccordionGroup>

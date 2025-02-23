@@ -69,6 +69,10 @@
       "pages": ["api-reference/endpoint/get", "api-reference/endpoint/create"]
     },
     {
+      "group": "Group Management Endpoints",
+      "pages": ["api-reference/group-management/create"]
+    },
+    {
       "group": "Group Message Endpoints",
       "pages": ["api-reference/group-messages/create"]
     },

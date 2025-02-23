@@ -1,0 +1,82 @@
+## Update Profile Name
+
+Update the display name of your agent's WhatsApp profile.
+
+### Authentication Headers
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key
+</ParamField>
+
+<ParamField header="x-api-secret" type="string" required>
+  Your API secret
+</ParamField>
+
+### URL Parameters
+
+<ParamField path="accountId" type="string" required>
+  Your account ID
+</ParamField>
+
+### Body Parameters
+
+<ParamField body="agent_number" type="string" required>
+  The WhatsApp phone number to update (must start with '+')
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  New profile name
+</ParamField>
+
+### Response Fields
+
+<ResponseField name="status" type="string">
+  Indicates if the request was successful. Possible values are `success` or `error`.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  A human-readable message describing the result of the operation.
+</ResponseField>
+
+<ResponseField name="errors" type="array">
+  An array containing validation errors if any occurred during the request.
+</ResponseField>
+
+<RequestExample>
+```bash Request
+curl --location --request POST 'https://api.a1base.com/v1/profile-settings/{accountId}/profile/name' \
+--header 'x-api-key: YOUR_API_KEY' \
+--header 'x-api-secret: YOUR_API_SECRET' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "agent_number": "+1234567890",
+    "name": "New Profile Name"
+}'
+```
+
+```json Request Body
+{
+  "agent_number": "+1234567890",
+  "name": "New Profile Name"
+}
+```
+</RequestExample>
+
+<ResponseExample>
+```json Success Response
+{
+  "status": "success",
+  "message": "Profile name updated successfully"
+}
+```
+
+```json Error Response
+{
+  "status": "error",
+  "message": "Failed to update profile name",
+  "errors": [
+    "Invalid phone number format"
+  ]
+}
+```
+</ResponseExample>
