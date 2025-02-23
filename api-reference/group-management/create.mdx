@@ -75,6 +75,12 @@ curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management
     For actions: `add_participants`, `remove_participants`, `promote_admin`, `demote_admin`
   </Accordion>
 
+  <Accordion icon="link" title="Join Group">
+    Required for `action: "join_group"`:
+    - `invite_code` (string): Group invite code
+    - `thread_id` (string): Direct group ID (if already have access)
+  </Accordion>
+
   <Accordion icon="gear" title="Group Settings">
     Required for `update_settings`:
     - `setting` (string): One of:
@@ -204,7 +210,7 @@ curl --location 'https://api.a1base.com/v1/whatsapp/{accountId}/group-management
     --header 'x-api-secret: YOUR_API_SECRET' \
     --header 'Content-Type: application/json' \
     --data '{
-        "action": "join",
+        "action": "join_group",
         "agent_number": "+1234567890",
         "thread_id": "123123"
     }'
