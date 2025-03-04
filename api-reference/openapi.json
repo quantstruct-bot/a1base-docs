@@ -7,7 +7,12 @@
   },
   "servers": [
     {
-      "url": "https://api.a1base.com/v1"
+      "url": "https://api.a1base.com/v1",
+      "description": "A1Base API server"
+    },
+    {
+      "url": "https://your.endpoint.com",
+      "description": "Your webhook endpoint"
     }
   ],
   "security": [
@@ -655,22 +660,41 @@
     },
     "/whatsapp/incoming": {
       "post": {
+        "servers": [
+          {
+            "url": "https://your.endpoint.com",
+            "description": "Your webhook endpoint"
+          }
+        ],
         "summary": "Receive WhatsApp Message",
-        "description": "Webhook endpoint for receiving incoming WhatsApp messages in real-time",
+        "description": "Webhook endpoint for receiving incoming WhatsApp messages from WhatsApp servers",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["thread_id", "message_id", "thread_type", "content", "sender_number", "sender_name", "a1_account_id", "timestamp"],
+                "required": [
+                  "thread_id",
+                  "message_id", 
+                  "thread_type",
+                  "content",
+                  "sender_number",
+                  "sender_name",
+                  "a1_account_id",
+                  "timestamp",
+                  "service",
+                  "message_type",
+                  "is_from_agent",
+                  "message_content"
+                ],
                 "properties": {
                   "thread_id": {
                     "type": "string",
                     "description": "Unique identifier for the chat thread"
                   },
                   "message_id": {
-                    "type": "string",
+                    "type": "string", 
                     "description": "Unique identifier for the specific message"
                   },
                   "thread_type": {
@@ -690,11 +714,6 @@
                     "type": "string",
                     "description": "Name of the message sender"
                   },
-                  "a1_account_number": {
-                    "type": "string",
-                    "deprecated": true,
-                    "description": "Your A1Base account identifier"
-                  },
                   "a1_account_id": {
                     "type": "string",
                     "description": "Your A1Base account identifier"
@@ -702,6 +721,30 @@
                   "timestamp": {
                     "type": "string",
                     "description": "A timestamp in ISO 8601 format"
+                  },
+                  "service": {
+                    "type": "string",
+                    "enum": ["whatsapp", "telegram"],
+                    "description": "The messaging service"
+                  },
+                  "message_type": {
+                    "type": "string",
+                    "enum": ["text", "image", "video", "audio", "document"],
+                    "description": "Type of message content"
+                  },
+                  "is_from_agent": {
+                    "type": "boolean",
+                    "description": "Whether the message is from an agent"
+                  },
+                  "message_content": {
+                    "type": "object",
+                    "description": "Structured message content",
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "description": "Text content of the message"
+                      }
+                    }
                   }
                 }
               }
@@ -711,9 +754,6 @@
         "responses": {
           "200": {
             "description": "Message received successfully"
-          },
-          "403": {
-            "description": "Invalid secret key"
           },
           "500": {
             "description": "Internal server error"

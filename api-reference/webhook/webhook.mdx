@@ -6,7 +6,7 @@ openapi: "POST /whatsapp/incoming"
 The webhook endpoint allows you to receive incoming WhatsApp messages in real-time. When a message is received, it will be sent to your configured webhook URL with the following payload structure.
 
 <Tip>
-  This webhook will receive all incoming messages, including those created using the A1Base API. To prevent infinite loops, you may want to check the sender\_number to avoid agents replying to themselves.
+  This webhook will receive all incoming messages, including those created using the A1Base API. To prevent infinite loops, you may want to check the sender_number to avoid agents replying to themselves.
 </Tip>
 
 ### Webhook Payload
@@ -21,10 +21,6 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
 
 <ParamField body="thread_type" type="string">
   Type of chat - can be "group", "individual", or "broadcast"
-</ParamField>
-
-<ParamField body="content" type="string">
-  The message text content. For unsupported message types, will contain "[Unsupported Message Type]"
 </ParamField>
 
 <ParamField body="sender_number" type="string">
@@ -48,7 +44,7 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
 </ParamField>
 
 <ParamField body="service" type="string">
-  The messaging service used
+  The messaging service used (e.g. "whatsapp")
 </ParamField>
 
 <ParamField body="message_type" type="string">
