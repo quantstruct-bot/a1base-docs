@@ -52,7 +52,7 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
 </ParamField>
 
 <ParamField body="message_type" type="string">
-  Type of the message (e.g. "text", "rich_text")
+  Type of the message. Can be one of: "text", "rich_text", "image", "video", "audio", "reaction", "group_invite", "location", "unsupported_message_type"
 </ParamField>
 
 <ParamField body="is_from_agent" type="boolean">
@@ -62,14 +62,14 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
 <ParamField body="message_content" type="object">
   The complete message content object containing all message data. Structure varies by message_type:
 
-  For message_type: "conversation" (simple text)
+  For message_type: "text" (simple text)
   ```json
   {
     "text": "Hello world"
   }
   ```
 
-  For message_type: "extendedTextMessage" (rich text with optional quote)
+  For message_type: "rich_text" (rich text with optional quote)
   ```json
   {
     "text": "This is a reply to something",
@@ -78,35 +78,35 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
   }
   ```
 
-  For message_type: "imageMessage"
+  For message_type: "image"
   ```json
   {
     "data": "base64_encoded_image_data"
   }
   ```
 
-  For message_type: "videoMessage"
+  For message_type: "video"
   ```json
   {
     "data": "base64_encoded_video_data"
   }
   ```
 
-  For message_type: "audioMessage"
+  For message_type: "audio"
   ```json
   {
     "data": "base64_encoded_audio_data"
   }
   ```
 
-  For message_type: "reactionMessage"
+  For message_type: "reaction"
   ```json
   {
     "reaction": "👍"
   }
   ```
 
-  For message_type: "groupInviteMessage"
+  For message_type: "group_invite"
   ```json
   {
     "groupName": "My WhatsApp Group",
@@ -114,7 +114,7 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
   }
   ```
 
-  For message_type: "locationMessage"
+  For message_type: "location"
   ```json
   {
     "latitude": -33.8688,
@@ -124,7 +124,7 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
   }
   ```
 
-  For unsupported message types
+  For message_type: "unsupported_message_type"
   ```json
   {
     "error": "Unsupported Message Type"
