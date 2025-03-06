@@ -4,6 +4,7 @@ openapi: "POST /whatsapp/incoming"
 ---
 
 The webhook endpoint allows you to receive incoming WhatsApp messages in real-time. When a message is received, it will be sent to your configured webhook URL with the following payload structure.
+Think of it as setting up an automatic forwarding system - whenever someone messages your AI agent on WhatsApp, we'll immediately forward that message to your specified webhook URL, so your agent can process and respond to it right away.
 
 ```json
 {
@@ -151,3 +152,57 @@ The webhook endpoint allows you to receive incoming WhatsApp messages in real-ti
 * `200`: Message received successfully
 * `403`: Invalid secret key
 * `500`: Internal server error
+
+<AccordionGroup>
+  <Accordion icon="webhook" title="Setting up your webhook">
+    1. Create an endpoint in your application to receive webhook events:
+
+    ```typescript
+    import express from 'express';
+    import { WhatsAppIncomingData } from 'a1base-node';
+    
+    const app = express();
+    app.use(express.json());
+    
+    app.post('/whatsapp/incoming', async (req, res) => {
+      const {
+        thread_id,
+        message_id,
+        thread_type,
+        sender_number,
+        sender_name,
+        a1_account_id,
+        timestamp,
+        service,
+        message_type,
+        is_from_agent,
+        message_content,
+      } = req.body as WhatsAppIncomingData;
+      // Process the incoming message
+      console.log(`Received message from ${sender_name}: ${message_content.text}`);
+      
+      // Always respond with 200 to acknowledge receipt
+      res.json({ success: true });
+    });
+    ```
+
+    2. Deploy your endpoint to a public URL (e.g. using ngrok for testing)
+    
+    3. Update your webhook URL on the A1Base dashboard at https://www.a1base.com/dashboard/phone-numbers
+
+    For a complete implementation example including message handling and AI responses, see our chat agent example:
+    ```typescript:examples/chat-agent.mdx
+    startLine: 130
+    endLine: 209
+    ```
+  </Accordion>
+
+  <Accordion icon="shield-check" title="Security best practices">
+    - Validate the webhook payload structure matches the expected format
+    - Check the sender_number to avoid infinite loops with your own agent
+    - Use HTTPS endpoints only
+    - Keep your webhook URL private
+    - Implement rate limiting if needed
+    - Add error handling for failed message processing
+  </Accordion>
+</AccordionGroup>
