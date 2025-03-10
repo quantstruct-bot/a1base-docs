@@ -14,6 +14,7 @@ Think of it as setting up an automatic forwarding system - whenever someone mess
   "sender_number": "+61400123456",
   "sender_name": "Jane",
   "a1_account_id": "123-123-123",
+  "a1_phone_number": "+1415123456",
   "timestamp": "2024-12-20T00:48:15+00:00",
   "service": "whatsapp",
   "message_type": "text",
@@ -56,6 +57,10 @@ Think of it as setting up an automatic forwarding system - whenever someone mess
 
 <ParamField body="a1_account_id" type="string">
   Your A1Base account identifier
+</ParamField>
+
+<ParamField body="a1_phone_number" type="string">
+  The A1Base phone number that received the message. e.g. "+61400999888"
 </ParamField>
 
 <ParamField body="timestamp" type="string">
@@ -172,6 +177,7 @@ Think of it as setting up an automatic forwarding system - whenever someone mess
         sender_number,
         sender_name,
         a1_account_id,
+        a1_phone_number,
         timestamp,
         service,
         message_type,
