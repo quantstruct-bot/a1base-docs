@@ -88,6 +88,10 @@
     {
       "group": "Webhook",
       "pages": ["api-reference/webhook/webhook"]
+    },
+    {
+      "group": "Email (Beta)",
+      "pages": ["api-reference/email/introduction"]
     }
   ],
   "footerSocials": {

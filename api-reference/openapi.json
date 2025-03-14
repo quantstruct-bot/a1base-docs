@@ -760,6 +760,184 @@
           }
         }
       }
+    },
+    "/group-management/{accountId}": {
+      "post": {
+        "summary": "Group Management",
+        "description": "Perform various WhatsApp group operations",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-API-Secret",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["action", "agent_number"],
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "create",
+                      "update_name",
+                      "update_description",
+                      "update_picture",
+                      "add_participants",
+                      "remove_participants",
+                      "promote_admin",
+                      "demote_admin",
+                      "join",
+                      "leave",
+                      "update_settings"
+                    ],
+                    "description": "The operation to perform"
+                  },
+                  "agent_number": {
+                    "type": "string",
+                    "description": "The phone number initiating the action (must start with '+')"
+                  },
+                  "thread_id": {
+                    "type": "string",
+                    "description": "The group chat ID (required for all actions except 'create')"
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "Group name (for create action)"
+                  },
+                  "participants": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Phone numbers to add/remove/modify"
+                  },
+                  "initial_message": {
+                    "type": "string",
+                    "description": "First message to send (optional, for create action)"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "New group name (for update_name action)"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "New description (for update_description action)"
+                  },
+                  "image_url": {
+                    "type": "string",
+                    "description": "New profile picture URL (for update_picture action)"
+                  },
+                  "invite_code": {
+                    "type": "string",
+                    "description": "Group invite code (for join action)"
+                  },
+                  "setting": {
+                    "type": "string",
+                    "enum": [
+                      "announcement",
+                      "not_announcement",
+                      "locked",
+                      "unlocked"
+                    ],
+                    "description": "Group setting to update (for update_settings action)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Operation completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["success"]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "thread_id": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "participants": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["error"]
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {

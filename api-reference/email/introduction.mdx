@@ -1,0 +1,40 @@
+---
+title: 'Email'
+description: 'Send and receive emails through the A1Base API'
+---
+
+# Email API (Beta)
+
+The Email API allows you to programmatically send and manage emails through A1 Base. This feature is currently in beta.
+
+## Base URL
+
+```bash
+https://api.a1base.com/v1/emails
+
+```
+
+## Sending Emails
+
+You can send emails using the following endpoint:
+
+```bash
+POST https://api.a1base.com/v1/emails/{email_id}/send
+```
+
+### Example Request
+
+```bash
+curl --location 'https://api.a1base.com/v1/emails/78806ba9-6f15-4f6b-bca4-7015061f89b2/send' \
+--header 'X-API-Key: YOUR_API_KEY' \
+--header 'X-API-Secret: YOUR_API_SECRET' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "sender_address": "hello@a1mail.com",  
+    "recipient_address": "recipient@example.com", 
+    "subject": "Hello from A1Base",
+    "body": "This is an example email body.",
+    "headers": {},
+    "attachment_uri": "" 
+}'
+```
