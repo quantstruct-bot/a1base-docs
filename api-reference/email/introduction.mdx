@@ -19,13 +19,13 @@ https://api.a1base.com/v1/emails
 You can send emails using the following endpoint:
 
 ```bash
-POST https://api.a1base.com/v1/emails/{email_id}/send
+POST https://api.a1base.com/v1/emails/{account_id}/send
 ```
 
 ### Example Request
 
 ```bash
-curl --location 'https://api.a1base.com/v1/emails/78806ba9-6f15-4f6b-bca4-7015061f89b2/send' \
+curl --location 'https://api.a1base.com/v1/emails/{account_id}/send' \
 --header 'X-API-Key: YOUR_API_KEY' \
 --header 'X-API-Secret: YOUR_API_SECRET' \
 --header 'Content-Type: application/json' \
