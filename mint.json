@@ -50,6 +50,11 @@
     },
     
     {
+      "group": "Features",
+      "pages": ["cron-jobs"]
+    },
+    
+    {
       "group": "API Documentation",
       "pages": ["api-reference/introduction"]
     },
@@ -81,6 +86,10 @@
     {
       "group": "Webhook",
       "pages": ["api-reference/webhook/webhook"]
+    },
+    {
+      "group": "Cron Jobs",
+      "pages": ["api-reference/cron-jobs/introduction"]
     },
     {
       "group": "Email (Beta)",

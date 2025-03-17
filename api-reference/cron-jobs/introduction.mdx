@@ -1,0 +1,404 @@
+---
+title: "Cron Jobs API"
+description: "API reference for managing scheduled tasks"
+---
+
+# Cron Jobs API
+
+The A1Base Cron Jobs API allows you to programmatically create, manage, and monitor scheduled tasks for your AI agents.
+
+## Authentication
+
+All API requests require authentication using your A1Base API key. Include your API key in the Authorization header:
+
+```bash
+Authorization: Bearer YOUR_API_KEY
+```
+
+## Base URL
+
+```
+https://api.a1base.com/v1
+```
+
+## Endpoints
+
+### Create a Cron Job
+
+```bash
+POST /cron-jobs
+```
+
+Create a new scheduled task that will execute at the specified intervals.
+
+#### Request Body
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `endpoint_url` | string | Yes | The URL to be called when the cron job executes |
+| `frequency` | string | Yes | Frequency of execution (daily, weekly, monthly, custom) |
+| `time` | string | Yes | Time of execution in 24-hour format (HH:MM) |
+| `timezone` | string | Yes | Timezone for the execution time (e.g., America/Los_Angeles) |
+| `method` | string | Yes | HTTP method to use (GET, POST, PUT, DELETE) |
+| `headers` | object | No | HTTP headers to include with the request |
+| `body` | object | No | Request body for POST/PUT methods |
+| `day_of_week` | integer | No | Day of week for weekly jobs (0-6, where 0 is Sunday) |
+| `day_of_month` | integer | No | Day of month for monthly jobs (1-31) |
+| `custom_schedule` | string | No | Cron expression for custom schedules |
+
+#### Example Request
+
+```json
+{
+  "endpoint_url": "https://api.example.com/webhook",
+  "frequency": "daily",
+  "time": "09:00",
+  "timezone": "America/New_York",
+  "method": "POST",
+  "headers": {
+    "Authorization": "Bearer token123",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "action": "daily_update",
+    "params": {
+      "user_id": "all"
+    }
+  }
+}
+```
+
+#### Example Response
+
+```json
+{
+  "id": "crn_123456789",
+  "endpoint_url": "https://api.example.com/webhook",
+  "frequency": "daily",
+  "time": "09:00",
+  "timezone": "America/New_York",
+  "method": "POST",
+  "headers": {
+    "Authorization": "Bearer token123",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "action": "daily_update",
+    "params": {
+      "user_id": "all"
+    }
+  },
+  "status": "active",
+  "created_at": "2023-05-20T15:30:45Z",
+  "next_execution": "2023-05-21T09:00:00-04:00"
+}
+```
+
+### List All Cron Jobs
+
+```bash
+GET /cron-jobs
+```
+
+Retrieve a list of all cron jobs for your account.
+
+#### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `status` | string | No | Filter by status (active, paused) |
+| `limit` | integer | No | Maximum number of records to return (default: 20, max: 100) |
+| `offset` | integer | No | Number of records to skip (for pagination) |
+
+#### Example Response
+
+```json
+{
+  "data": [
+    {
+      "id": "crn_123456789",
+      "endpoint_url": "https://api.example.com/webhook",
+      "frequency": "daily",
+      "time": "09:00",
+      "timezone": "America/New_York",
+      "method": "POST",
+      "status": "active",
+      "created_at": "2023-05-20T15:30:45Z",
+      "next_execution": "2023-05-21T09:00:00-04:00"
+    },
+    {
+      "id": "crn_987654321",
+      "endpoint_url": "https://api.example.com/weekly-report",
+      "frequency": "weekly",
+      "time": "07:00",
+      "day_of_week": 1,
+      "timezone": "America/Los_Angeles",
+      "method": "GET",
+      "status": "paused",
+      "created_at": "2023-05-15T10:20:30Z",
+      "next_execution": null
+    }
+  ],
+  "meta": {
+    "total": 2,
+    "limit": 20,
+    "offset": 0
+  }
+}
+```
+
+### Get a Cron Job
+
+```bash
+GET /cron-jobs/{id}
+```
+
+Retrieve details for a specific cron job.
+
+#### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | The ID of the cron job |
+
+#### Example Response
+
+```json
+{
+  "id": "crn_123456789",
+  "endpoint_url": "https://api.example.com/webhook",
+  "frequency": "daily",
+  "time": "09:00",
+  "timezone": "America/New_York",
+  "method": "POST",
+  "headers": {
+    "Authorization": "Bearer token123",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "action": "daily_update",
+    "params": {
+      "user_id": "all"
+    }
+  },
+  "status": "active",
+  "created_at": "2023-05-20T15:30:45Z",
+  "next_execution": "2023-05-21T09:00:00-04:00",
+  "last_execution": {
+    "timestamp": "2023-05-20T09:00:00-04:00",
+    "status": "success",
+    "response_code": 200,
+    "response_time_ms": 245
+  }
+}
+```
+
+### Update a Cron Job
+
+```bash
+PATCH /cron-jobs/{id}
+```
+
+Update the configuration of an existing cron job.
+
+#### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | The ID of the cron job |
+
+#### Request Body
+
+Include only the fields you want to update.
+
+#### Example Request
+
+```json
+{
+  "time": "10:30",
+  "headers": {
+    "Authorization": "Bearer new_token456",
+    "Content-Type": "application/json"
+  }
+}
+```
+
+#### Example Response
+
+```json
+{
+  "id": "crn_123456789",
+  "endpoint_url": "https://api.example.com/webhook",
+  "frequency": "daily",
+  "time": "10:30",
+  "timezone": "America/New_York",
+  "method": "POST",
+  "headers": {
+    "Authorization": "Bearer new_token456",
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "action": "daily_update",
+    "params": {
+      "user_id": "all"
+    }
+  },
+  "status": "active",
+  "created_at": "2023-05-20T15:30:45Z",
+  "updated_at": "2023-05-20T16:45:12Z",
+  "next_execution": "2023-05-21T10:30:00-04:00"
+}
+```
+
+### Pause a Cron Job
+
+```bash
+POST /cron-jobs/{id}/pause
+```
+
+Temporarily pause the execution of a cron job.
+
+#### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | The ID of the cron job |
+
+#### Example Response
+
+```json
+{
+  "id": "crn_123456789",
+  "status": "paused",
+  "next_execution": null
+}
+```
+
+### Resume a Cron Job
+
+```bash
+POST /cron-jobs/{id}/resume
+```
+
+Resume a paused cron job.
+
+#### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | The ID of the cron job |
+
+#### Example Response
+
+```json
+{
+  "id": "crn_123456789",
+  "status": "active",
+  "next_execution": "2023-05-21T10:30:00-04:00"
+}
+```
+
+### Delete a Cron Job
+
+```bash
+DELETE /cron-jobs/{id}
+```
+
+Permanently delete a cron job.
+
+#### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | The ID of the cron job |
+
+#### Example Response
+
+```json
+{
+  "id": "crn_123456789",
+  "deleted": true
+}
+```
+
+### Get Execution History
+
+```bash
+GET /cron-jobs/{id}/executions
+```
+
+Retrieve the execution history for a specific cron job.
+
+#### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | string | Yes | The ID of the cron job |
+
+#### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `status` | string | No | Filter by execution status (success, failed) |
+| `limit` | integer | No | Maximum number of records to return (default: 20, max: 100) |
+| `offset` | integer | No | Number of records to skip (for pagination) |
+
+#### Example Response
+
+```json
+{
+  "data": [
+    {
+      "id": "exe_987654321",
+      "cron_job_id": "crn_123456789",
+      "timestamp": "2023-05-20T09:00:00-04:00",
+      "status": "success",
+      "response_code": 200,
+      "response_time_ms": 245,
+      "response_body": {
+        "status": "processed",
+        "message": "Daily update successfully triggered"
+      }
+    },
+    {
+      "id": "exe_876543210",
+      "cron_job_id": "crn_123456789",
+      "timestamp": "2023-05-19T09:00:00-04:00",
+      "status": "failed",
+      "response_code": 500,
+      "response_time_ms": 1245,
+      "error": "Internal server error at destination"
+    }
+  ],
+  "meta": {
+    "total": 2,
+    "limit": 20,
+    "offset": 0
+  }
+}
+```
+
+## Error Responses
+
+| Status Code | Description |
+|-------------|-------------|
+| 400 | Bad Request - Invalid parameters |
+| 401 | Unauthorized - Authentication failed |
+| 403 | Forbidden - Insufficient permissions |
+| 404 | Not Found - Resource does not exist |
+| 429 | Too Many Requests - Rate limit exceeded |
+| 500 | Internal Server Error |
+
+### Example Error Response
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "Invalid frequency value",
+    "details": {
+      "frequency": ["Must be one of: daily, weekly, monthly, custom"]
+    }
+  }
+}
+``` 

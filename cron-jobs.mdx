@@ -1,0 +1,167 @@
+---
+title: "Cron Jobs"
+description: "Configure automated tasks that run on a schedule"
+---
+
+## Overview
+
+A1Base's Cron Jobs feature allows you to set up automated tasks that run on a defined schedule. This is particularly useful for:
+
+- Daily check-ins with your users
+- Scheduled data updates
+- Periodic notifications
+- Automated reporting
+- Triggering AI agent workflows at specific times
+
+Cron jobs make HTTP requests to your specified endpoints, allowing you to integrate with any system that accepts webhook calls.
+
+## Creating a Cron Job
+
+To get started with cron jobs, visit:
+**[https://www.a1base.com/dashboard/cron-jobs](https://www.a1base.com/dashboard/cron-jobs)**
+
+1. Navigate to the Cron Jobs section at [https://www.a1base.com/dashboard/cron-jobs](https://www.a1base.com/dashboard/cron-jobs) in your A1Base dashboard.
+2. Click on "Create New Cron Job" to open the creation form.  
+3. Fill out the fields on the "Create Cron Job" page:
+
+   - **Endpoint URL**: Enter the publicly accessible URL that will receive the HTTP request (e.g., https://api.example.com/webhook).  
+   - **Frequency**: Choose how often your cron job should run (e.g., Daily, Weekly, Monthly, or Custom).  
+   - **Time**: Select the specific time of day when your cron job should run.  
+   - **Timezone**: Choose your preferred timezone so the job runs at the correct local time.  
+   - **HTTP Method**: Select the HTTP method (GET, POST, PUT, DELETE, etc.).  
+   - **Headers (JSON)**: If needed, enter request headers as a JSON object (for example: `{"Authorization": "Bearer token", "Content-Type": "application/json"}`).  
+   - **Request Body** (optional): For POST or PUT requests, you can include request body data that will be sent to your endpoint.
+
+4. When you're ready, click on "Create Cron Job" to save your new job.
+
+<CardGroup cols={2}>
+  <Card title="Endpoint URL" icon="link">
+    The URL that will receive the HTTP request when the cron job runs
+  </Card>
+  <Card title="Frequency & Time" icon="clock">
+    How often the job should run (daily, weekly, etc.) and at what time
+  </Card>
+  <Card title="Timezone" icon="globe">
+    Select your preferred timezone for accurate scheduling
+  </Card>
+  <Card title="HTTP Method" icon="code">
+    Choose GET, POST, PUT, or other HTTP methods for your request
+  </Card>
+</CardGroup>
+
+## Configuration Options
+
+### Endpoint URL
+Provide the full URL where the cron job should send requests. Make sure it's publicly accessible so it can process incoming requests from A1Base.
+
+### Frequency
+Choose when your cron job should run:
+- **Daily**: Runs once every day at the specified time
+- **Weekly**: Runs once a week on the specified day and time
+- **Monthly**: Runs once a month on a specified date and time
+- **Custom**: Define a custom schedule using standard cron syntax (advanced)
+
+### Time & Timezone
+Select the time of day to run the job and the timezone to ensure it aligns with your local or desired region's clock.
+
+### HTTP Method
+Select the appropriate HTTP method:
+- **GET**: Retrieve data from your endpoint
+- **POST**: Send data to create a resource
+- **PUT**: Send data to update a resource
+- **DELETE**: Remove a resource from the server
+
+### Headers
+Enter your headers as a JSON object under the "Headers (JSON)" field in the form. For example:
+
+## Example Cron Job Configurations
+
+Here are some practical examples of how to configure cron jobs for different AI agent applications:
+
+### Example 1: Daily Customer Check-in Bot
+
+**Use Case**: Send a morning check-in message to all users asking about their day
+
+**Configuration**:
+- **Endpoint URL**: `https://your-api.example.com/send-daily-checkin`
+- **Frequency**: Daily
+- **Time**: 09:00 AM
+- **Timezone**: America/New_York
+- **HTTP Method**: POST
+- **Headers**:
+  ```json
+  {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  }
+  ```
+- **Request Body**:
+  ```json
+  {
+    "message": "Good morning! How are you feeling today?",
+    "include_name": true
+  }
+  ```
+
+This cron job will automatically trigger your customer engagement system to send personalized check-in messages to all active users every morning at 9 AM Eastern Time.
+
+### Example 2: Weekly Analytics Report
+
+**Use Case**: Generate and send a weekly performance report to business stakeholders
+
+**Configuration**:
+- **Endpoint URL**: `https://your-api.example.com/generate-weekly-report`
+- **Frequency**: Weekly
+- **Day**: Monday
+- **Time**: 06:00 AM
+- **Timezone**: America/Los_Angeles
+- **HTTP Method**: POST
+- **Headers**:
+  ```json
+  {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  }
+  ```
+- **Request Body**:
+  ```json
+  {
+    "report_type": "weekly_summary",
+    "metrics": ["user_engagement", "conversion_rate", "response_time"],
+    "format": "pdf",
+    "recipients": ["team@example.com", "executives@example.com"]
+  }
+  ```
+
+This cron job runs every Monday morning at 6 AM Pacific Time, generating comprehensive analytics reports and automatically distributing them to relevant team members before the work week begins.
+
+### Example 3: Monthly Subscription Renewal Reminder
+
+**Use Case**: Send reminders to users whose subscriptions are about to expire
+
+**Configuration**:
+- **Endpoint URL**: `https://your-api.example.com/subscription-reminders`
+- **Frequency**: Monthly
+- **Day**: 25
+- **Time**: 10:00 AM
+- **Timezone**: UTC
+- **HTTP Method**: POST
+- **Headers**:
+  ```json
+  {
+    "Authorization": "Bearer YOUR_API_KEY",
+    "Content-Type": "application/json"
+  }
+  ```
+- **Request Body**:
+  ```json
+  {
+    "template_id": "subscription_reminder",
+    "days_until_expiration": 7,
+    "include_renewal_link": true,
+    "offer_discount": true,
+    "discount_code": "RENEW20"
+  }
+  ```
+
+This cron job executes on the 25th of each month, identifying users whose subscriptions will expire in the next week and sending them personalized renewal reminders with special incentives to encourage continued service.
