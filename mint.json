@@ -48,14 +48,7 @@
       "group": "🚀 Get Started",
       "pages": ["introduction", "quickstart", "spam-and-quality-checks"]
     },
-    {
-      "group": "💡 Quick Examples",
-      "pages": ["examples/checkin-bot", "examples/life-coach", "examples/chat-agent", "examples/sales-agent"]
-    },
-    {
-      "group": "💻 Working App Examples",
-      "pages": ["examples/checkin-bot", "examples/life-coach", "examples/chat-agent", "examples/sales-agent"]
-    },
+    
     {
       "group": "API Documentation",
       "pages": ["api-reference/introduction"]
