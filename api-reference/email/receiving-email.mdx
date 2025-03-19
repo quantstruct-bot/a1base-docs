@@ -1,0 +1,48 @@
+---
+title: 'Receiving Emails'
+description: 'Receive incoming emails through webhooks'
+---
+
+# Receiving Emails
+
+A1Base can forward incoming emails to your application via webhooks. When an email is received at your A1Base email address, we'll send a POST request to your configured webhook URL with the email details.
+You can configure your webhook on the [email dashboard here](https://www.a1base.com/dashboard/email-addresses)
+
+## Webhook Payload
+
+When an email is received, A1Base will send a POST request to your webhook endpoint with the following JSON payload:
+
+```json
+{
+    "email_id": "a82b3e6b-dc79-46ad-9284-a166629592e3",
+    "subject": "Email Subject",
+    "sender_address": "sender@example.com",
+    "recipient_address": "your-address@a1send.com",
+    "timestamp": "2025-03-19T10:24:08.46083+00:00",
+    "service": "email",
+    "raw_email_data": "Full email content including headers and body"
+}
+```
+
+### Payload Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `email_id` | string | Unique identifier for the received email |
+| `subject` | string | Subject line of the email |
+| `sender_address` | string | Email address of the sender |
+| `recipient_address` | string | Your A1Base email address that received the message |
+| `timestamp` | string | ISO 8601 timestamp of when the email was received |
+| `service` | string | Always "email" for email webhooks |
+| `raw_email_data` | string | Complete raw email content including headers and body |
+
+## Example Raw Email Data
+
+The `raw_email_data` field contains the complete email including headers, which you can parse to extract additional information like:
+
+- DKIM signatures
+- Message ID
+- Content type
+- Email body (plain text and HTML versions)
+- Attachments
+- Custom headers 

@@ -92,8 +92,12 @@
       "pages": ["api-reference/cron-jobs/introduction"]
     },
     {
-      "group": "Email (Beta)",
-      "pages": ["api-reference/email/introduction"]
+      "group": "Email",
+      "pages": [
+        "api-reference/email/create-email",
+        "api-reference/email/receiving-email",
+        "api-reference/email/sending-email"
+    ]
     }
   ],
   "footerSocials": {

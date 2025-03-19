@@ -1,0 +1,52 @@
+---
+title: 'Creating Email Addresses'
+description: 'Create custom email addresses through the A1Base API'
+---
+
+# Creating Email Addresses
+
+The Email API allows you to create custom email addresses on your A1Base account with the domain a1send.com.
+To setup a custom domain (i.e jane@myapp.com) please contact the founders at pasha@a1base.com or pennie@a1base.com
+
+## Endpoint
+Email addresses must be between 5 and 30 characters long.
+```bash
+POST https://api.a1base.com/v1/emails/{account_id}/create-email
+```
+
+### Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `address` | string | Yes | The local part of the email address (before the @ symbol) |
+| `domain_name` | string | Yes | The domain name to use for the email address |
+
+### Example Request
+
+```bash
+curl --location 'https://api.a1base.com/v1/emails/{account_id}/create-email' \
+--header 'X-API-Key: YOUR_API_KEY' \
+--header 'X-API-Secret: YOUR_API_SECRET' \
+--header 'Content-Type: application/json' \
+--data '{
+    "address": "jane",
+    "domain_name": "a1send.com"
+}'
+```
+
+### Example Response
+
+```json
+{
+    "status": "success",
+}
+```
+
+### Error Responses
+
+| Status Code | Description |
+|------------|-------------|
+| 400 | Invalid request parameters |
+| 401 | Invalid API credentials |
+| 403 | Domain not authorized for account |
+| 409 | Email address already exists |
