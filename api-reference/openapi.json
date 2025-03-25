@@ -95,12 +95,6 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "messageId": {
-                      "type": "string"
-                    },
-                    "accountId": {
-                      "type": "string"
-                    },
                     "to": {
                       "type": "string"
                     },
@@ -118,12 +112,6 @@
                       "type": "string",
                       "format": "date-time"
                     },
-                    "direction": {
-                      "type": "string"
-                    },
-                    "attachment_uri": {
-                      "type": "string"
-                    }
                   }
                 }
               }
@@ -214,12 +202,6 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "messageId": {
-                      "type": "string"
-                    },
-                    "accountId": {
-                      "type": "string"
-                    },
                     "chat_group_id": {
                       "type": "string"
                     },
@@ -236,18 +218,6 @@
                     "date_created": {
                       "type": "string",
                       "format": "date-time"
-                    },
-                    "direction": {
-                      "type": "string"
-                    },
-                    "attachment_uri": {
-                      "type": "string"
-                    },
-                    "participants": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
                     }
                   }
                 }
