@@ -13,3 +13,90 @@ openapi: "POST /messages/individual/{accountId}/send"
 **NPM Package**
 
 [**https://www.npmjs.com/package/a1base-api**](https://www.npmjs.com/package/a1base-api)
+
+### Sending Text Messages
+
+```json
+POST /individual/{accountId}/send
+Headers:
+  x-api-key: your_api_key
+  x-api-secret: your_api_secret
+  Content-Type: application/json
+
+Body:
+{
+  "from": "+14155552671",
+  "to": "+14155551234",
+  "service": "whatsapp",
+  "message": "Hello, this is a test message!"
+}
+```
+
+### Sending Media Messages
+
+#### Individual Media Message
+To send an image to an individual:
+
+```json
+POST /individual/{accountId}/send
+Headers:
+  x-api-key: your_api_key
+  x-api-secret: your_api_secret
+  Content-Type: application/json
+
+Body:
+{
+  "from": "+14155552671",
+  "to": "+14155551234",
+  "service": "whatsapp",
+  "message_type": "media",
+  "media_url": "https://example.com/images/sample.jpg",
+  "media_type": "image",
+  "caption": "Check out this image!"
+}
+```
+
+### Using the Universal Endpoint
+You can also use the newer universal endpoint for both text and media messages:
+
+```json
+POST /send/{accountId}
+Headers:
+  x-api-key: your_api_key
+  x-api-secret: your_api_secret
+  Content-Type: application/json
+
+Body:
+{
+  "from": "+14155552671",
+  "to": "+14155551234",
+  "service": "whatsapp",
+  "type": "individual",
+  "content": {
+    "type": "media",
+    "media_url": "https://example.com/videos/demo.mp4",
+    "media_type": "video",
+    "caption": "Product demo video"
+  }
+}
+```
+
+### Supported Media Types
+The API supports these media types:
+
+* **image**: For images (JPG, PNG, etc.)
+* **video**: For video files
+* **audio**: For audio files
+* **document**: For documents (PDF, DOC, etc.)
+
+### Important Notes
+* The `media_url` must be a publicly accessible URL where the media file can be downloaded.
+* The `caption` field is optional. You can send media without a caption if desired.
+* Make sure your media files are in formats supported by WhatsApp.
+* There are size limits for different media types:
+  * Images: Generally up to 5MB
+  * Videos: Generally up to 16MB
+  * Audio: Generally up to 16MB
+  * Documents: Generally up to 100MB
+* The `from` number must be a WhatsApp-enabled number that your account has permission to use.
+* The `to` number for individual messages must be a valid WhatsApp number.

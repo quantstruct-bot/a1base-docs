@@ -10,3 +10,78 @@ openapi: "POST /messages/group/{accountId}/send"
 * You'll need the thread\_id of the group chat to send messages. This is provided when you create a group or in webhook events.
 
 ### Example Request
+
+#### Text Message to Group
+
+```json
+POST /group/{accountId}/send
+Headers:
+  x-api-key: your_api_key
+  x-api-secret: your_api_secret
+  Content-Type: application/json
+
+Body:
+{
+  "from": "+14155552671",
+  "thread_id": "group-thread-id-123",
+  "service": "whatsapp",
+  "message": "Hello everyone in the group!"
+}
+```
+
+#### Media Message to Group
+To send a document to a group:
+
+```json
+POST /group/{accountId}/send
+Headers:
+  x-api-key: your_api_key
+  x-api-secret: your_api_secret
+  Content-Type: application/json
+
+Body:
+{
+  "from": "+14155552671",
+  "thread_id": "group-thread-id-123",
+  "service": "whatsapp",
+  "message_type": "media",
+  "media_url": "https://example.com/documents/report.pdf",
+  "media_type": "document",
+  "caption": "Here's the quarterly report"
+}
+```
+
+### Using the Universal Endpoint for Groups
+You can also use the newer universal endpoint for group messages:
+
+```json
+POST /send/{accountId}
+Headers:
+  x-api-key: your_api_key
+  x-api-secret: your_api_secret
+  Content-Type: application/json
+
+Body:
+{
+  "from": "+14155552671",
+  "thread_id": "group-thread-id-123",
+  "service": "whatsapp",
+  "type": "group",
+  "content": {
+    "type": "media",
+    "media_url": "https://example.com/videos/demo.mp4",
+    "media_type": "video",
+    "caption": "Product demo video for the team"
+  }
+}
+```
+
+### Important Notes for Group Media Messages
+* For group messages, you need a valid `thread_id` instead of a `to` number.
+* The `caption` field is optional. You can send media without a caption if desired.
+* The same media type and size restrictions apply as with individual messages:
+  * Images: Generally up to 5MB
+  * Videos: Generally up to 16MB
+  * Audio: Generally up to 16MB
+  * Documents: Generally up to 100MB
+* The agent must be a member of the group before sending messages.
