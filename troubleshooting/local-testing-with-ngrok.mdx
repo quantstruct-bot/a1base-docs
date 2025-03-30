@@ -1,0 +1,132 @@
+---
+title: "Local Testing with Ngrok"
+description: "How to use Ngrok to test A1Base webhooks in your local development environment"
+---
+
+# Testing Webhooks Locally with Ngrok
+
+When developing applications that use A1Base webhooks, you'll need a way to receive webhook events on your local development machine. This guide explains how to use Ngrok to create a secure tunnel to your local server.
+
+## What is Ngrok?
+
+Ngrok is a tool that creates secure tunnels from public URLs to your local machine, allowing external services like A1Base to send webhooks to your local development environment.
+
+## Setting Up Ngrok
+
+### Step 1: Install Ngrok
+
+1. Visit [ngrok.com](https://ngrok.com/) and sign up for a free account
+2. Download and install Ngrok for your operating system
+3. Authenticate your Ngrok installation with your auth token:
+
+```bash
+ngrok config add-authtoken YOUR_AUTH_TOKEN
+```
+
+### Step 2: Start Your Local Server
+
+First, make sure your local webhook server is running. For A1Framework or NextJS you'll run "npm run dev". When you do this you'll find out what port
+your app is running on (e.g. localhost:3000).
+
+
+### Step 3: Connect Ngrok to Your Local Port
+
+Once your local server is running, use Ngrok to create a tunnel to your local port:
+
+```bash
+ngrok http 3000
+```
+
+This will start Ngrok and display output similar to:
+
+```
+Session Status                online
+Account                       Your Name (Plan: Free)
+Version                       3.3.1
+Region                        United States (us)
+Latency                       24ms
+Web Interface                 http://127.0.0.1:4040
+Forwarding                    https://a1b2-203-0-113-42.ngrok-free.app -> http://localhost:3000
+```
+
+The `https://a1b2-203-0-113-42.ngrok-free.app` URL is your public webhook URL that you'll configure in the A1Base dashboard.
+
+<Warning>
+  Ngrok free tier URLs change every time you restart Ngrok. You get one free consistent URL with Ngrok. For consistent URLs, consider upgrading to a paid plan.
+</Warning>
+
+## Configuring A1Base with Your Ngrok URL
+
+To configure your Ngrok URL in the A1Base dashboard, follow these steps:
+
+1. Log in to the A1Base dashboard at https://www.a1base.com/dashboard/phone-numbers.
+2. Navigate to the "Phone Numbers" section and locate the phone number you wish to configure (e.g., 14155356190).
+3. In the "Webhook URL" column for that phone number, enter your Ngrok HTTPS URL combined with your endpoint path (e.g., https://a1b2-203-0-113-42.ngrok-free.app/whatsapp/incoming).
+4. Click the "Save" button next to the webhook URL field to apply the changes.
+<Note> Refer to the A1Base dashboard screenshot for a visual guide on configuring webhook URLs: [Phone Numbers Dashboard](link-to-screenshot). </Note>
+
+## Development vs. Production Phone Numbers
+
+<Tip>
+  For a smooth development workflow, we recommend purchasing two separate phone numbers on A1Base: one for development and one for production.
+</Tip>
+
+### Why Use Separate Phone Numbers?
+
+Using separate phone numbers for development and production environments offers several advantages:
+
+1. **Isolated Testing**: Test new features without affecting your production users
+2. **Prevent Webhook Conflicts**: Avoid routing production messages to your development environment
+3. **Easier Debugging**: Clearly distinguish between development and production traffic
+4. **Safer Experimentation**: Experiment with new features risk-free
+
+### Setting Up Development and Production Numbers
+
+1. **Purchase Two Phone Numbers**: In your A1Base dashboard, purchase two separate phone numbers
+2. **Label Your Numbers**: Clearly label one as "Development" and one as "Production"
+3. **Configure Different Webhooks**:
+   - Development number: Point to your Ngrok URL
+   - Production number: Point to your production server URL
+4. **Use Environment Variables**: In your code, use environment variables to determine which phone number to use:
+
+```javascript
+// Example of using different phone numbers based on environment
+const phoneNumber = process.env.NODE_ENV === 'production'
+  ? process.env.A1BASE_PRODUCTION_PHONE
+  : process.env.A1BASE_DEVELOPMENT_PHONE;
+
+// Use the appropriate phone number for outgoing messages
+a1base.sendMessage({
+  to: recipientNumber,
+  from: phoneNumber,
+  message: "Hello from A1Base!"
+});
+```
+
+## Monitoring Webhook Traffic
+
+Ngrok provides a web interface at `http://127.0.0.1:4040` where you can inspect:
+
+- All incoming webhook requests
+- Request and response headers
+- Request and response bodies
+- Timing information
+
+This interface is invaluable for debugging webhook issues during development.
+
+## Best Practices for Local Testing
+
+1. **Keep Ngrok Running**: Maintain your Ngrok session while testing to avoid URL changes
+2. **Log All Webhook Data**: Implement comprehensive logging in your development environment
+3. **Simulate Different Scenarios**: Test various message types and edge cases
+4. **Verify Webhook Signatures**: Even in development, validate webhook signatures if available
+5. **Test Error Handling**: Ensure your application handles webhook failures gracefully
+
+## Limitations and Considerations
+
+- **Free Tier Restrictions**: Ngrok's free tier has limitations on connections and features
+- **URL Changes**: Free Ngrok URLs change each time you restart Ngrok
+- **Latency**: There may be slight additional latency when using Ngrok
+- **Security**: Be cautious about sensitive data passing through your development environment
+
+By following this guide, you can effectively test A1Base webhooks in your local development environment using Ngrok, ensuring a smooth transition to production.

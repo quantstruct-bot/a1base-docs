@@ -1,0 +1,216 @@
+---
+title: "Webhook Issues"
+description: "Troubleshooting common webhook problems and how to resolve them"
+---
+
+
+
+## Common Webhook Problems
+
+<AccordionGroup>
+  <Accordion icon="triangle-exclamation" title="Webhook not receiving messages">
+    ### Webhook Not Receiving Messages
+    
+    If your webhook isn't receiving expected messages, check the following:
+    
+    1. **Verify the webhook URL** in your A1Base dashboard is correct and publicly accessible. 
+    2. **Use the right URL route** - sometimes people forget to add the specific route of the website (e.g. /apu/receive-message)
+    2. **Check your server logs** for any incoming requests that might be failing
+    3. **Ensure your server is accepting POST requests** with JSON content
+    4. **Confirm your firewall settings** allow incoming webhook requests
+    5. **Verify SSL/TLS certificates** if you're using HTTPS (required for production)
+    
+    **Quick Test:**
+    ```bash
+    # Test if your endpoint is publicly accessible
+    curl -X POST https://your-webhook-url.com/path \
+      -H "Content-Type: application/json" \
+      -d '{"test":"payload"}'
+    ```
+  </Accordion>
+  
+  <Accordion icon="clock" title="Vercel timeout issues">
+    ### Vercel Timeout Issues
+    
+    Vercel has a default function timeout of 10 seconds for hobby plans and 60 seconds for pro plans. If your webhook processing takes longer, you might experience timeouts.
+    
+    **Solutions:**
+    
+    1. **Acknowledge webhooks immediately** and process them asynchronously:
+    
+    ```typescript
+    app.post('/whatsapp/incoming', async (req, res) => {
+      // Immediately acknowledge receipt to prevent timeout
+      res.status(200).json({ success: true });
+      
+      // Then process the webhook asynchronously
+      try {
+        await processWebhookAsync(req.body);
+      } catch (error) {
+        console.error('Error processing webhook:', error);
+      }
+    });
+    
+    async function processWebhookAsync(data) {
+      // Your time-consuming processing logic here
+    }
+    ```
+    
+    2. **Upgrade to Vercel Pro** for longer function execution times
+    
+    3. **Use a serverless queue** like AWS SQS or a background job processor
+    
+    4. **Consider moving webhook processing** to a different hosting provider without strict timeout limits
+  </Accordion>
+  
+  <Accordion icon="link" title="Using the right endpoint">
+    ### Using the Right Endpoint
+    
+    Using incorrect webhook endpoints is a common issue that can prevent proper message delivery.
+    
+    **Best Practices:**
+    
+    1. **Use dedicated endpoints** for different services (e.g., `/webhooks/a1base` instead of a generic `/webhook`)
+    
+    2. **Include version information** in your webhook paths (e.g., `/api/v1/webhooks/a1base`)
+    
+    3. **Verify the correct endpoint format** in the A1Base dashboard:
+       - Must be a complete URL including `https://`
+       - Must point to a publicly accessible server
+       - Should not include query parameters unless necessary
+    
+    **Example of proper endpoint structure:**
+    ```
+    https://your-domain.com/api/webhooks/a1base
+    ```
+    
+    **Not:**
+    ```
+    your-domain.com/webhooks
+    /api/webhooks
+    ```
+  </Accordion>
+  
+  <Accordion icon="shield" title="Authentication and security issues">
+    ### Authentication and Security Issues
+    
+    Securing your webhook is essential to prevent unauthorized access.
+    
+    **Security Best Practices:**
+    
+    1. **Validate webhook signatures** if provided by A1Base
+    
+    2. **Implement IP whitelisting** if A1Base provides a static IP range
+    
+    3. **Use a webhook secret** to validate authentic requests:
+    
+    ```typescript
+    import crypto from 'crypto';
+    
+    app.post('/whatsapp/incoming', (req, res) => {
+      const signature = req.headers['x-webhook-signature'];
+      const payload = JSON.stringify(req.body);
+      const secret = process.env.WEBHOOK_SECRET;
+      
+      const expectedSignature = crypto
+        .createHmac('sha256', secret)
+        .update(payload)
+        .digest('hex');
+      
+      if (signature !== expectedSignature) {
+        return res.status(403).send('Invalid signature');
+      }
+      
+      // Process valid webhook
+      res.status(200).send('Success');
+    });
+    ```
+    
+    4. **Don't expose sensitive information** in your webhook response
+  </Accordion>
+  
+  <Accordion icon="network-wired" title="Network and infrastructure problems">
+    ### Network and Infrastructure Problems
+    
+    Network issues can cause intermittent webhook failures.
+    
+    **Troubleshooting Steps:**
+    
+    1. **Check your server's connectivity** and ensure it has stable internet access
+    
+    2. **Monitor server load** as high CPU or memory usage can cause webhook processing delays
+    
+    3. **Implement retry logic** in your webhook handler:
+    
+    ```typescript
+    async function processWebhookWithRetry(data, maxRetries = 3) {
+      let retries = 0;
+      
+      while (retries < maxRetries) {
+        try {
+          await processWebhook(data);
+          return; // Success
+        } catch (error) {
+          retries++;
+          console.error(`Attempt ${retries} failed:`, error);
+          
+          if (retries >= maxRetries) {
+            console.error('Max retries reached. Giving up.');
+            // Consider logging to a monitoring service or error tracker
+            break;
+          }
+          
+          // Exponential backoff
+          await new Promise(r => setTimeout(r, 1000 * Math.pow(2, retries)));
+        }
+      }
+    }
+    ```
+    
+    4. **Use a monitoring service** like Sentry, New Relic, or Datadog to track webhook reliability
+  </Accordion>
+  
+  <Accordion icon="bug" title="Debugging webhook payloads">
+    ### Debugging Webhook Payloads
+    
+    When webhooks arrive but processing fails, payload issues might be the cause.
+    
+    **Debugging Techniques:**
+    
+    1. **Log the complete webhook payload** during development:
+    
+    ```typescript
+    app.post('/whatsapp/incoming', (req, res) => {
+      console.log('Webhook received:', JSON.stringify(req.body, null, 2));
+      
+      // Implement validation to ensure all required fields are present
+      const { thread_id, message_id, message_content } = req.body;
+      
+      if (!thread_id || !message_id || !message_content) {
+        console.error('Missing required fields in webhook payload');
+        return res.status(400).send('Invalid payload');
+      }
+      
+      // Process valid webhook
+      res.status(200).send('Success');
+    });
+    ```
+    
+    2. **Implement schema validation** using libraries like Joi or Zod
+    
+    3. **Create a webhook simulator** for testing your handler with various payload types
+    
+    4. **Set up alerting** for malformed payloads to catch API changes early
+  </Accordion>
+</AccordionGroup>
+
+## Advanced Troubleshooting
+
+For persistent webhook issues, consider implementing these advanced solutions:
+
+1. **Webhook queue system** to handle high volumes of incoming webhooks
+2. **Dead letter queue** for failed webhook processing attempts
+3. **Circuit breaker pattern** to prevent cascading failures when dependent services are down
+4. **Comprehensive logging and monitoring** to track webhook reliability over time
+
+If you continue experiencing webhook issues after trying these solutions, please contact our support team at [pennie@a1base.com](mailto:pennie@a1base.com) with details about your specific problem.

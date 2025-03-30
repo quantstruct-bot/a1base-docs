@@ -47,7 +47,11 @@
     
     {
       "group": "Features",
-      "pages": ["cron-jobs"]
+      "pages": ["cron-jobs", "troubleshooting"]
+    },
+    {
+      "group": "Troubleshooting",
+      "pages": ["troubleshooting/webhook-issues", "troubleshooting/local-testing-with-ngrok"]
     },
     
     {
