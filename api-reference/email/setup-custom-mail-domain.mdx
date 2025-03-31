@@ -121,6 +121,7 @@ TTL: Automatic
 | DKIM | TXT | the domain key we've provided e.g `subdomain._domainkey` | The value we've provided - this will look like: `v=DKIM1; h=sha256; k=rsa; t=y; p=AsDSDGGJGKA...` | — | Automatic |
 | MX | MX | @ | `mail.a101.bot` | 1 | Automatic |
 
+<img src="https://public-a1base-agent-images.s3.us-east-1.amazonaws.com/namecheap-final-dns-records.png" width="80%" />
 
 ---
 
@@ -132,7 +133,9 @@ TTL: Automatic
 - Go to [https://dash.cloudflare.com](https://dash.cloudflare.com/)
 - Select your domain from the list
 - Navigate to the **DNS** tab
-    <img src="https://public-a1base-agent-images.s3.us-east-1.amazonaws.com/cloudflare-dns-tab.png" width="90%" />
+
+<img src="https://public-a1base-agent-images.s3.us-east-1.amazonaws.com/cloudflare-add-subdomain.png" width="60%" />
+
 
 ---
 
@@ -220,6 +223,8 @@ TTL: Automatic
 | MX | MX | @ | `mail.a101.bot` | 10 | Auto | DNS only |
 
 > 🔒 **Important**: Make sure all email-related records have the proxy disabled (gray cloud). Email services require direct DNS resolution to function properly.
+
+<img src="https://public-a1base-agent-images.s3.us-east-1.amazonaws.com/cloudflare-finished.png" width="60%" />
 
 ---
 
