@@ -97,7 +97,7 @@
         "api-reference/email/create-email",
         "api-reference/email/receiving-email",
         "api-reference/email/sending-email",
-        "api-reference/email/setup-custom-subdomain"
+        "api-reference/email/setup-custom-mail-domain"
       ]
     }
   ],

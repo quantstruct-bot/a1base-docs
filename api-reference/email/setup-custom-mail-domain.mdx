@@ -1,0 +1,255 @@
+---
+title: 'Setup your own custom mail domain on A1Mail'
+description: 'Instead of using @a1send.com or @a101.bot, setup your own custom email addresses to send and receive emails.'
+---
+<Info>
+### In this guide you will:
+
+### 1. Create a subdomain on your hosting provider for mail: 
+-  Log onto your hosting provider (Cloudflare, Namecheap, etc.)
+-  Add a new subdomain called `mail` e.g `mail.yourdomain.com` 
+
+### 2. Connect your subdomain to A1Mail
+- Go to the [email dashboard](https://www.a1base.com/dashboard/email-addresses)
+- Add in your new subdomain to generate DKIM keys
+
+### 3. Update your DNS records
+- Update the MX record
+- Add SPF, DKIM, and DMARC records for deliverability and anti-spam
+
+### 4. Warm up your new mail domain
+- Create a new email with your subdomain and send some emails to your new address
+- Start sending emails using the A1Base API
+
+</Info>
+
+### Shortcuts:
+
+- [Go to the guide for **Namecheap**](#-guide-for-namecheap)
+- [Go to the guide for **Cloudflare**](#-guide-for-cloudflare)
+
+---
+
+# **Namecheap Guide**
+
+#### 1. Log into your Namecheap dashboard
+
+- Go to [https://www.namecheap.com](https://www.namecheap.com/)
+- Navigate to **Domain List > Manage** next to `yourdomain.com`
+- Navigate to **Advanced DNS**
+    <img src="https://public-a1base-agent-images.s3.us-east-1.amazonaws.com/namecheap-advanced-dns.png" width="90%" />
+    
+
+---
+
+#### 2. Add an A Record for `mail.example.com`
+> This points your new mail subdomain, mail.example.com to the server's IP address.
+> 
+- In the **Advanced DNS** tab click **Add New Record**
+- Select `A Record` and enter the following:
+```jsx
+    Host: `mail`
+    Value: `110.232.112.135`
+    TTL: Automatic
+```
+
+---
+
+#### 3. Add an MX Record for email delivery
+
+> This tells other mail servers where to deliver email for example.com.
+> 
+- Still in **Advanced DNS,** scroll down to MAIL SETTINGS
+- Next to "MAIL SETTINGS", select the option "Custom MX" and enter the following:
+```jsx
+    Type: `MX Record`
+    Host: `@`
+    Value: `mail.a101.bot`
+    Priority: `10`
+    TTL: Automatic
+```
+
+---
+
+#### 4. Update A1Mail Dashboard and get your DKIM values
+
+- Go to your [A1Mail dashboard](https://www.a1base.com/dashboard/email-addresses) and navigate to the **Custom Mail Domain** section
+- Enter your new mail subdomain to get your DKIM keys
+
+#### 5. Add the TXT Records for SPF, DKIM, and DMARC
+
+> These records are for deliverability and anti-spam
+> 
+- Go back to the **Advanced DNS** tab click **Add New Record**, select `TXT RECORD` for the following:
+
+**SPF Record**
+```jsx
+Type: TXT  
+Host: mail  
+Value: v=spf1 ip4:110.232.112.135 a:mail.a101.bot ~all
+TTL: Automatic
+```
+
+**DMARC Record**
+
+```jsx
+Type: TXT  
+Host: _dmarc  
+Value: v=DMARC1; p=none; rua=mailto:postmaster@subdomain.yourdomain.com
+TTL: Automatic
+```
+
+**DKIM Record**
+- Copy the host and value from the A1Mail dashboard
+
+```jsx
+Type: TXT  
+Host: <copy from A1Mail dashboard>
+Value: <copy from A1Mail dashboard> e.g v=DKIM1; h=sha256; k=rsa; t=y; p=asdfgasdfasdf...
+TTL: Automatic
+```
+
+### Summary:
+
+> You should have these records in your Advanced DNS Settings
+> 
+
+| **Record** | **Type** | **Host** | **Value** | **Priority** | **TTL** |
+| --- | --- | --- | --- | --- | --- |
+| SPF | TXT | mail | `v=spf1 ip4:110.232.112.135 a:mail.a101.bot ~all` | — | Automatic |
+| DMARC | TXT | _dmarc | `v=DMARC1; p=none; rua=mailto:postmaster@subdomain.yourdomain.com` | — | Automatic |
+| DKIM | TXT | the domain key we've provided e.g `subdomain._domainkey` | The value we've provided - this will look like: `v=DKIM1; h=sha256; k=rsa; t=y; p=AsDSDGGJGKA...` | — | Automatic |
+| MX | MX | @ | `mail.a101.bot` | 1 | Automatic |
+
+
+---
+
+
+# **Cloudflare Guide**
+
+#### 1. Log into your Cloudflare dashboard
+
+- Go to [https://dash.cloudflare.com](https://dash.cloudflare.com/)
+- Select your domain from the list
+- Navigate to the **DNS** tab
+    <img src="https://public-a1base-agent-images.s3.us-east-1.amazonaws.com/cloudflare-dns-tab.png" width="90%" />
+
+---
+
+#### 2. Add an A Record for `mail.yourdomain.com`
+
+> This points your new mail subdomain to the server's IP address.
+> 
+- Click **Add record**
+- Select `A` for the Type and enter the following:
+```jsx
+    Type: A
+    Name: mail
+    IPv4 address: 110.232.112.135
+    TTL: Auto
+    Proxy status: DNS only (gray cloud)
+```
+
+---
+
+#### 3. Add an MX Record for email delivery
+
+> This tells other mail servers where to deliver email for your domain.
+> 
+- Click **Add record** again
+- Select `MX` for the Type and enter the following:
+```jsx
+    Type: MX
+    Name: @ (represents the root domain)
+    Mail server: mail.a101.bot
+    Priority: 10
+    TTL: Auto
+```
+
+---
+
+#### 4. Update A1Mail Dashboard and get your DKIM values
+
+- Go to your [A1Mail dashboard](https://www.a1base.com/dashboard/email-addresses) and navigate to the **Custom Mail Domain** section
+- Enter your new mail subdomain to get your DKIM keys
+
+#### 5. Add the TXT Records for SPF, DKIM, and DMARC
+
+> These records are for deliverability and anti-spam
+> 
+- Click **Add record** for each of the following TXT records:
+
+**SPF Record**
+```jsx
+    Type: TXT
+    Name: mail
+    Content: v=spf1 ip4:110.232.112.135 a:mail.a101.bot ~all
+    TTL: Auto
+```
+
+**DMARC Record**
+```jsx
+    Type: TXT
+    Name: _dmarc
+    Content: v=DMARC1; p=none; rua=mailto:postmaster@yourdomain.com
+    TTL: Auto
+```
+
+**DKIM Record**
+- Copy the host and value from the A1Mail dashboard
+
+```jsx
+    Type: TXT
+    Name: <copy from A1Mail dashboard> (without your domain)
+    Content: <copy from A1Mail dashboard>
+    TTL: Auto
+    Proxy status: DNS only (gray cloud)
+```
+
+### Summary:
+
+> You should have these records in your Cloudflare DNS settings
+> 
+
+| **Record** | **Type** | **Name (Host)** | **Content (Value)** | **Priority** | **TTL** | **Proxy Status** |
+| --- | --- | --- | --- | --- | --- | --- |
+| A | A | mail | `110.232.112.135` | — | Auto | DNS only |
+| SPF | TXT | mail | `v=spf1 ip4:110.232.112.135 a:mail.a101.bot ~all` | — | Auto | DNS only |
+| DMARC | TXT | _dmarc | `v=DMARC1; p=none; rua=mailto:postmaster@yourdomain.com` | — | Auto | DNS only |
+| DKIM | TXT | from dashboard | from dashboard | — | Auto | DNS only |
+| MX | MX | @ | `mail.a101.bot` | 10 | Auto | DNS only |
+
+> 🔒 **Important**: Make sure all email-related records have the proxy disabled (gray cloud). Email services require direct DNS resolution to function properly.
+
+---
+
+# **Warm up your new mail domain**
+
+After setting up your custom mail domain, you'll need to properly warm it up to ensure good deliverability. Here's how:
+
+#### 1. Create a new email with your subdomain
+
+- Create an email address using your new subdomain (e.g., `hello@mail.example.com`)
+- Follow our [Creating Email Addresses guide](api-reference/email/create-email) for detailed instructions
+
+#### 2. Send some test emails to your new address
+
+- Send emails from your personal accounts (Gmail, Outlook, etc.) to your new address
+
+> 💡 **Warming up tips**: New email domains need time to build reputation. Start with low volumes (5-10 emails/day) for the first week, then gradually increase. Avoid sending mass emails immediately after setup.
+
+#### 3. Receiving emails
+
+- Check that incoming emails are properly delivered to your new address
+- For more details on receiving and managing emails, see our [Receiving Emails guide](api-reference/email/receiving-email)
+
+#### 4. Send emails using the A1Base API
+
+- Once your domain is properly warmed up, start sending emails programmatically
+- Use the A1Base API to send emails from your custom domain address
+- Follow our [Sending Emails guide](api-reference/email/sending-email) for implementation details
+
+Note:
+- Engage with these emails by replying to them
+- This helps establish a positive sending reputation for your domain
+
