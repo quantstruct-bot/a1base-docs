@@ -96,8 +96,14 @@
       "pages": [
         "api-reference/email/create-email",
         "api-reference/email/receiving-email",
-        "api-reference/email/sending-email",
-        "api-reference/email/setup-custom-mail-domain"
+        "api-reference/email/sending-email"
+      ]
+    },
+    {
+      "group": "Custom Mail Domain",
+      "pages": [
+        "api-reference/custom-mail-domain/index",
+        "api-reference/custom-mail-domain/verify-dns-settings"
       ]
     }
   ],

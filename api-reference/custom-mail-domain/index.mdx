@@ -2,6 +2,8 @@
 title: 'Setup your own custom mail domain on A1Mail'
 description: 'Instead of using @a1send.com or @a101.bot, setup your own custom email addresses to send and receive emails.'
 ---
+
+⏰ Estimated setup time: 20min.
 <Info>
 ### In this guide you will:
 
@@ -13,9 +15,10 @@ description: 'Instead of using @a1send.com or @a101.bot, setup your own custom e
 - Go to the [email dashboard](https://www.a1base.com/dashboard/email-addresses)
 - Add in your new subdomain to generate DKIM keys
 
-### 3. Update your DNS records
+### 3. Update and test your DNS records
 - Update the MX record
 - Add SPF, DKIM, and DMARC records for deliverability and anti-spam
+- Verify your DNS records are properly configured
 
 ### 4. Warm up your new mail domain
 - Create a new email with your subdomain and send some emails to your new address
@@ -23,7 +26,7 @@ description: 'Instead of using @a1send.com or @a101.bot, setup your own custom e
 
 </Info>
 
-### Shortcuts:
+### Guide Shortcuts:
 
 - [Go to the guide for **Namecheap**](#-guide-for-namecheap)
 - [Go to the guide for **Cloudflare**](#-guide-for-cloudflare)
@@ -124,7 +127,6 @@ TTL: Automatic
 <img src="https://public-a1base-agent-images.s3.us-east-1.amazonaws.com/namecheap-final-dns-records.png" width="80%" />
 
 ---
-
 
 # **Cloudflare Guide**
 
@@ -228,6 +230,28 @@ TTL: Automatic
 
 ---
 
+# **Test your DNS Settings**
+
+After setting up your DNS records, it's essential to verify that they are properly configured. Here's how:
+
+#### 1. Check your DNS records
+
+- Use a DNS lookup tool (e.g., [MxToolbox](https://mxtoolbox.com/)) to verify your DNS records
+- Check that your MX, SPF, DKIM, and DMARC records are correctly set up
+- For detailed instructions, follow our [How to Verify your DNS Settings](verify-dns-settings) guide
+
+#### 2. Test email delivery
+
+- Send an email to your new custom domain address. By default, all new mail domains will have a `postmaster@yourdomain.com` inbox
+- If the email is delivered successfully, you can move on to the next step
+
+#### Running into issues?
+
+> Feel free to reach out to [founders@a1base.com](mailto:founders@a1base.com) directly if you run into any issues during the setup process.
+
+
+---
+
 # **Warm up your new mail domain**
 
 After setting up your custom mail domain, you'll need to properly warm it up to ensure good deliverability. Here's how:
@@ -257,4 +281,3 @@ After setting up your custom mail domain, you'll need to properly warm it up to 
 Note:
 - Engage with these emails by replying to them
 - This helps establish a positive sending reputation for your domain
-

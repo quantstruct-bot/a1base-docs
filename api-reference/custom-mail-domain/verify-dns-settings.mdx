@@ -1,0 +1,131 @@
+---
+title: 'How to Verify your DNS Settings'
+description: 'After setting up your custom mail domain DNS records, it is crucial to verify that they are correctly configured. This guide will walk you through the verification process to ensure your email domain is ready for use with A1Base.'
+---
+
+<Info>
+### Recommended Tools:
+
+- **Command Line (CLI):** Use `dig` or `nslookup` to verify DNS records directly
+- **Tools:**
+  - **[MxToolbox](https://mxtoolbox.com/)**: Comprehensive suite of DNS checking tools
+  - **[Google Admin Toolbox](https://toolbox.googleapps.com/apps/checkmx/)**: Simple interface for checking MX records
+</Info>
+
+## Why DNS Verification Is Important
+
+Correctly configured DNS records are essential for:
+- **Email delivery**: Ensures your emails reach their destination
+- **Sender reputation**: Helps prevent your emails from being marked as spam
+- **Security**: Protects your domain from email spoofing and phishing attacks
+
+## What Records to Verify
+
+Before using any verification tools, understand what you're looking for:
+
+### 1. MX Records
+
+Verify that your MX record points to `mail.a101.bot` with priority `10`:
+
+```
+yourdomain.com. IN MX 10 mail.a101.bot.
+```
+
+### 2. SPF Records
+
+Verify your SPF record is correctly formatted and includes the A1Mail server:
+
+```
+mail.yourdomain.com. IN TXT "v=spf1 ip4:110.232.112.135 a:mail.a101.bot ~all"
+```
+
+### 3. DKIM Records
+
+Verify your DKIM record exists and contains the public key provided by A1Mail:
+
+```
+2025_default_mail._domainkey.mail.yourdomain.com. IN TXT "v=DKIM1; h=sha256; k=rsa; t=y; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA..."
+```
+
+### 4. DMARC Records
+
+Verify your DMARC record is correctly formatted:
+
+```
+_dmarc.yourdomain.com. IN TXT "v=DMARC1; p=none; rua=mailto:postmaster@yourdomain.com"
+```
+
+---
+
+## Verification Tools
+
+### Shortcuts:
+- [Command Line (CLI)](#1-command-line-tools)
+- [MxToolbox](#2-mxtoolbox)
+- [Google Admin Toolbox](#3-google-admin-toolbox)
+
+## 1. Command Line Tools
+
+You can use command line tools like `dig` or `nslookup` to verify your DNS records:
+
+```bash
+# Check MX records
+dig MX yourdomain.com
+
+# Check TXT records (for SPF, DKIM, DMARC)
+dig TXT mail.yourdomain.com
+dig TXT _dmarc.yourdomain.com
+dig TXT 2025_default_mail._domainkey.mail.yourdomain.com
+```
+
+---
+
+## 2. MxToolbox
+
+[MxToolbox](https://mxtoolbox.com/) provides comprehensive DNS checking tools:
+
+- **For MX records**: Use the [MX Lookup tool](https://mxtoolbox.com/MXLookup.aspx)
+	+ Enter: `mail.yourdomain.com`
+- **For SPF records**: Use the [SPF Record Lookup tool](https://mxtoolbox.com/SPFRecordLookup.aspx)
+	+ Enter: `mail.yourdomain.com` (exact host)
+- **For DKIM records**: Use the [DKIM Lookup tool](https://mxtoolbox.com/dkim.aspx)
+	+ Enter: `subdomain._domainkey.yourdomain.com` 
+    (You can find this in the A1Mail email dashboard)
+- **For DMARC records**: Use the [DMARC Lookup tool](https://mxtoolbox.com/DMARC.aspx)
+	+ Enter: `_dmarc.yourdomain.com` (exact host)
+
+---
+
+## 3. Google Admin Toolbox
+
+[Google Admin Toolbox](https://toolbox.googleapps.com/apps/checkmx/) provides a simple interface to check MX records and email delivery:
+
+1. Go to [Google Admin Toolbox](https://toolbox.googleapps.com/apps/checkmx/)
+2. Enter your domain name and click **Check MX**
+3. Review the results to ensure your MX records are correctly configured
+
+---
+
+## Troubleshooting Common Issues
+
+### DNS Propagation Delays
+
+DNS changes can take up to 48 hours to propagate worldwide. If your verification fails initially, wait a few hours and try again.
+
+### Incorrect Record Format
+
+Ensure there are no typos or formatting errors in your DNS records. Even small errors can cause verification to fail.
+
+### Missing Records
+
+Verify that all required records (MX, SPF, DKIM, DMARC) are present. Missing any one of these can affect email deliverability.
+
+### Cloudflare Proxy Enabled
+
+If using Cloudflare, ensure the proxy (orange cloud) is disabled for all email-related DNS records. Email requires direct DNS resolution.
+
+---
+
+## Need Help?
+
+If you're still having trouble verifying your DNS settings, feel free to reach out to our team at [founders@a1base.com](mailto:founders@a1base.com) for assistance.
