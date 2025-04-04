@@ -1,0 +1,225 @@
+---
+title: 'Sending Emails'
+description: 'Send emails programmatically through the A1Mail API with just a few lines of code'
+---
+
+## Request Parameters
+
+The following parameters are used when sending an email:
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `sender_address` | string | Yes | Email address that will appear in the "From" field |
+| `recipient_address` | string | Yes | Email address of the recipient |
+| `subject` | string | Yes | Subject line of the email |
+| `body` | string | Yes | Content of the email (plain text or HTML) |
+| `headers` | object | No | Optional email headers as key-value pairs (cc, bcc, etc.) |
+
+## Code Examples
+
+<Tabs>
+  <Tab title="cURL">
+    ### Send a Simple Text Email
+    
+    ```bash
+    curl --location 'https://api.a1base.com/v1/emails/{account_id}/send' \
+    --header 'X-API-Key: YOUR_API_KEY' \
+    --header 'X-API-Secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "sender_address": "hello@a1send.com",  
+        "recipient_address": "recipient@example.com", 
+        "subject": "Hello from A1Base",
+        "body": "This is an example email body.",
+        "headers": {}
+    }'
+    ```
+    
+    ### Send an HTML Email
+    
+    ```bash
+    curl --location 'https://api.a1base.com/v1/emails/{account_id}/send' \
+    --header 'X-API-Key: YOUR_API_KEY' \
+    --header 'X-API-Secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data-raw '{
+        "sender_address": "hello@a1send.com",
+        "recipient_address": "recipient@example.com",
+        "subject": "Hello from A1Base",
+        "body": "<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><title>A1Mail for AI Agents</title></head><body><p>Hey,<br><br>Welcome to A1Mail!<br>A1Mail is an email API made for AI agents who chat, not spam.<br><br>With A1Mail you can:</p><ul><li>Create new addresses via a simple API</li><li>Send emails effortlessly</li><li>Receive messages instantly via webhooks</li><li>Protect deliverability with built-in spam filters</li><li>Integrate with any AI system</li><li>Enjoy transparent pricing—no hidden fees</li><li>Use your own subdomain for AI agents</li></ul>Find out more at <a href=\"http://www.a1mail.com\">www.a1mail.com</a>.</p></body></html>",
+        "headers": {
+            "cc": "pennie@a1base.com",
+            "bcc": "pasha@a1base.com"
+        }
+    }'
+    ```
+  </Tab>
+  
+  <Tab title="Python">
+    ### Send a Simple Text Email
+    
+    ```python
+    import requests
+    import json
+
+    url = "https://api.a1base.com/v1/emails/{account_id}/send"
+    
+    headers = {
+        'X-API-Key': 'YOUR_API_KEY',
+        'X-API-Secret': 'YOUR_API_SECRET',
+        'Content-Type': 'application/json'
+    }
+    
+    data = {
+        "sender_address": "hello@a1send.com",
+        "recipient_address": "recipient@example.com",
+        "subject": "Hello from A1Base",
+        "body": "This is an example email body.",
+        "headers": {}
+    }
+    
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    print(response.json())
+    ```
+    
+    ### Send an HTML Email
+    
+    ```python
+    import requests
+    import json
+
+    url = "https://api.a1base.com/v1/emails/{account_id}/send"
+    
+    headers = {
+        'X-API-Key': 'YOUR_API_KEY',
+        'X-API-Secret': 'YOUR_API_SECRET',
+        'Content-Type': 'application/json'
+    }
+    
+    html_body = """<!DOCTYPE html>
+    <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>A1Mail for AI Agents</title>
+    </head>
+    <body>
+        <p>Hey,<br><br>
+        Welcome to A1Mail!<br>
+        A1Mail is an email API made for AI agents who chat, not spam.<br><br>
+        With A1Mail you can:</p>
+        <ul>
+            <li>Create new addresses via a simple API</li>
+            <li>Send emails effortlessly</li>
+            <li>Receive messages instantly via webhooks</li>
+            <li>Protect deliverability with built-in spam filters</li>
+            <li>Integrate with any AI system</li>
+            <li>Enjoy transparent pricing—no hidden fees</li>
+            <li>Use your own subdomain for AI agents</li>
+        </ul>
+        <p>Find out more at <a href="http://www.a1mail.com">www.a1mail.com</a>.</p>
+    </body>
+    </html>"""
+    
+    data = {
+        "sender_address": "hello@a1send.com",
+        "recipient_address": "recipient@example.com",
+        "subject": "Hello from A1Base",
+        "body": html_body,
+        "headers": {
+            "cc": "pennie@a1base.com",
+            "bcc": "pasha@a1base.com"
+        }
+    }
+    
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    print(response.json())
+    ```
+  </Tab>
+  
+  <Tab title="JavaScript">
+    ### Send a Simple Text Email
+    
+    ```javascript
+    const axios = require('axios');
+
+    const url = 'https://api.a1base.com/v1/emails/{account_id}/send';
+    
+    const headers = {
+      'X-API-Key': 'YOUR_API_KEY',
+      'X-API-Secret': 'YOUR_API_SECRET',
+      'Content-Type': 'application/json'
+    };
+    
+    const data = {
+      sender_address: 'hello@a1send.com',
+      recipient_address: 'recipient@example.com',
+      subject: 'Hello from A1Base',
+      body: 'This is an example email body.',
+      headers: {}
+    };
+    
+    axios.post(url, data, { headers })
+      .then(response => console.log(response.data))
+      .catch(error => console.error('Error:', error));
+    ```
+    
+    ### Send an HTML Email
+    
+    ```javascript
+    const axios = require('axios');
+
+    const url = 'https://api.a1base.com/v1/emails/{account_id}/send';
+    
+    const headers = {
+      'X-API-Key': 'YOUR_API_KEY',
+      'X-API-Secret': 'YOUR_API_SECRET',
+      'Content-Type': 'application/json'
+    };
+    
+    const htmlBody = `<!DOCTYPE html>
+    <html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>A1Mail for AI Agents</title>
+    </head>
+    <body>
+        <p>Hey,<br><br>
+        Welcome to A1Mail!<br>
+        A1Mail is an email API made for AI agents who chat, not spam.<br><br>
+        With A1Mail you can:</p>
+        <ul>
+            <li>Create new addresses via a simple API</li>
+            <li>Send emails effortlessly</li>
+            <li>Receive messages instantly via webhooks</li>
+            <li>Protect deliverability with built-in spam filters</li>
+            <li>Integrate with any AI system</li>
+            <li>Enjoy transparent pricing—no hidden fees</li>
+            <li>Use your own subdomain for AI agents</li>
+        </ul>
+        <p>Find out more at <a href="http://www.a1mail.com">www.a1mail.com</a>.</p>
+    </body>
+    </html>`;
+    
+    const data = {
+      sender_address: 'hello@a1send.com',
+      recipient_address: 'recipient@example.com',
+      subject: 'Hello from A1Base',
+      body: htmlBody,
+      headers: {
+        cc: 'pennie@a1base.com',
+        bcc: 'pasha@a1base.com'
+      }
+    };
+    
+    axios.post(url, data, { headers })
+      .then(response => console.log(response.data))
+      .catch(error => console.error('Error:', error));
+    ```
+  </Tab>
+</Tabs>
+
+<Info type="info" emoji="💡">
+  <b>We'd love to hear from you!</b>
+  
+  Don't hesitate to reach out to <a href="mailto:pennie@a1base.com">pennie@a1base.com</a> or <a href="mailto:pasha@a1base.com">pasha@a1base.com</a> if there's any features you'd like to see or prioritised!
+</Info>

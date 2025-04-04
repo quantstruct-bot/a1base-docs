@@ -1,0 +1,63 @@
+---
+title: 'Creating Email Addresses'
+description: 'Create an email address to send/receive from using our API'
+---
+
+The Email API allows you to create custom email addresses on your A1Base account.
+Get started with our free domains @a101.bot or @a1send.com.
+
+
+### Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `address` | string | Yes | The local part of the email address (before the @ symbol) |
+| `domain_name` | string | Yes | The domain name to use for the email address |
+
+### Endpoint
+
+```bash
+curl --location 'https://api.a1base.com/v1/emails/{account_id}/create-email' \
+--header 'X-API-Key: YOUR_API_KEY' \
+--header 'X-API-Secret: YOUR_API_SECRET' \
+--header 'Content-Type: application/json' \
+--data '{
+    "address": "jane",
+    "domain_name": "a1send.com"
+}'
+```
+Valid Email Addresses:
+- 5-30 characters long
+- Only contain letters, numbers, '.', '_', '-'
+- Have no consecutive dots, spaces, or commas
+
+### Example Response
+
+```json
+{
+    "status": "success",
+}
+```
+
+### Error Responses
+
+| Status Code | Description |
+|------------|-------------|
+| 400 | Invalid request parameters |
+| 401 | Invalid API credentials |
+| 403 | Domain not authorized for account |
+| 409 | Email address already exists |
+
+## Next Steps
+
+After creating your email address, you can:
+
+- [Set up a webhook](/a1mail/receiving-email) to receive incoming emails
+- [Send emails](/a1mail/sending-email) from your new address
+- [Configure a custom domain](/a1mail/custom-mail-domain/index) for your email addresses
+
+<Info type="info" emoji="💡">
+  <b>We'd love to hear from you!</b>
+  
+  Don't hesitate to reach out to <a href="mailto:pennie@a1base.com">pennie@a1base.com</a> or <a href="mailto:pasha@a1base.com">pasha@a1base.com</a> if there's any features you'd like to see or prioritised!
+</Info>

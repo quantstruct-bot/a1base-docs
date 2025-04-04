@@ -1,0 +1,221 @@
+---
+title: 'Receiving Emails'
+description: 'Receive incoming emails through webhooks'
+---
+
+A1Base can forward incoming emails to your application via webhooks. When an email is received at your A1Base email address, we'll send a POST request to your configured webhook URL with the email details.
+You can configure your webhook on the [email dashboard here](https://www.a1base.com/dashboard/email-addresses)
+
+⏰ Estimated setup time: 10min.
+<Info>
+### In this guide you will:
+
+### 1. Setup a webhook endpoint in your app
+- Create a simple endpoint to receive email webhooks
+- Use ngrok to expose your local endpoint to the internet
+
+### 2. Configure webhook URL in A1Mail dashboard
+- Go to the [email dashboard](https://www.a1base.com/dashboard/email-addresses)
+- Add your ngrok webhook URL to your A1Mail Dashboard
+
+### 3. Test receiving emails
+- Send a test email from your personal email address to your A1Mail inbox
+- View the incoming email data in your webhook endpoint
+- Parse and process the email contents as needed
+
+</Info>
+
+## 1. Create a Webhook Endpoint
+
+First, create an endpoint in your application to receive email notifications. You can use one of our example snippets below or create your own.
+
+<Card title="Webhook Implementation Examples" icon="webhook">
+  <Tabs>
+    <Tab title="Python (Flask)">
+      ```python
+      from flask import Flask, request, jsonify
+      
+      app = Flask(__name__)
+      
+      @app.route('/webhook/email', methods=['POST'])
+      def email_webhook():
+          # Get the webhook payload
+          data = request.json        
+          
+          # Process the incoming email
+          print(f"Received email: {data['subject']} from {data['sender_address']}")
+          
+          # Access specific parts of the email
+          email_id = data.get('email_id')
+          subject = data.get('subject')
+          sender = data.get('sender_address')
+          recipient = data.get('recipient_address')
+          timestamp = data.get('timestamp')
+          raw_email = data.get('raw_email_data')
+          
+          # Your logic here
+          # ...
+          
+          # Return a success response
+          return jsonify({"status": "success"}), 200
+      
+      if __name__ == '__main__':
+          app.run(debug=True, port=5000)
+      ```
+    </Tab>
+    <Tab title="Node.js (Express)">
+      ```javascript
+      const express = require('express');
+      const app = express();
+      
+      app.use(express.json());
+      
+      app.post('/webhook/email', (req, res) => {
+        // Get the webhook payload
+        const data = req.body;      
+        
+        // Process the incoming email
+        console.log(`Received email: ${data.subject} from ${data.sender_address}`);        
+        
+        // Access specific parts of the email
+        const emailId = data.email_id;
+        const subject = data.subject;
+        const sender = data.sender_address;
+        const recipient = data.recipient_address;
+        const timestamp = data.timestamp;
+        const rawEmail = data.raw_email_data;
+        
+        // Your logic here
+        // ...
+        
+        // Return a success response
+        res.status(200).json({ status: 'success' });
+      });
+      
+      app.listen(3000, () => {
+        console.log('Server listening on port 3000');
+      });
+      ```
+    </Tab>
+    <Tab title="JavaScript (Vanilla)">
+      ```javascript
+      // Simple vanilla JavaScript webhook handler
+      // Can be used with any JavaScript framework or serverless function
+      
+      async function handleEmailWebhook(request) {
+        try {
+          // Parse the incoming JSON payload
+          const data = await request.json();
+          
+          console.log(`Received email: ${data.subject} from ${data.sender_address}`);
+          
+          // Process email data
+          const { 
+            email_id, 
+            subject, 
+            sender_address, 
+            recipient_address, 
+            timestamp, 
+            service,
+            raw_email_data 
+          } = data;
+          
+          // Your logic here
+          // ...
+          
+          // Return a success response
+          return new Response(JSON.stringify({ status: 'success' }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          console.error('Error processing webhook:', error);
+          return new Response(JSON.stringify({ status: 'error', message: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+## 2. Expose Your Local Webhook Endpoint
+
+To receive emails in your inbox, you need to expose your local webhook endpoint to the internet. You can use ngrok to do this.
+Run the following command in your CLI to start ngrok:  
+```bash  
+ngrok http 3000
+```
+After starting ngrok
+
+1. **Find the forwarding URL** in the ngrok output:
+    ```
+    Forwarding https://0fcbcda91e79.ngrok.app -> http://localhost:3000
+    ```
+
+2. **Create the full webhook URL** by appending your webhook endpoint path:
+    ```
+    https://0fcbcda91e79.ngrok.app/webhook/email
+    ```
+
+3. **Use this complete URL** in the A1Mail dashboard webhook settings.
+
+## 3. Register Your Webhook in the Dashboard
+
+Once you have your webhook URL, you need to register it in the A1Mail dashboard:
+
+1. Log in to your [A1Base Dashboard](https://www.a1base.com/)
+2. Navigate to the Email Settings section
+3. Find your email address and click "Configure Webhook"
+4. Enter your full webhook URL (e.g., `https://0fcbcda91e79.ngrok.app/webhook/email`)
+5. Click "Save Changes"
+
+## 4. Test Your Webhook
+
+Send a test email to your inbox and check if the webhook is receiving the email notifications.
+
+## Webhook Payload
+
+When an email is received, A1Base will send a POST request to your webhook endpoint with the following JSON payload:
+
+```json
+{
+    "email_id": "a82b3e6b-dc79-46ad-9284-a166629592e3",
+    "subject": "Email Subject",
+    "sender_address": "sender@example.com",
+    "recipient_address": "your-address@a1send.com",
+    "timestamp": "2025-03-19T10:24:08.46083+00:00",
+    "service": "email",
+    "raw_email_data": "Full email content including headers and body"
+}
+```
+
+### Payload Fields
+
+| Field | Type | Description |
+|-------|------|-----------|
+| `email_id` | string | Unique identifier for the received email |
+| `subject` | string | Subject line of the email |
+| `sender_address` | string | Email address of the sender |
+| `recipient_address` | string | Your A1Base email address that received the message |
+| `timestamp` | string | ISO 8601 timestamp of when the email was received |
+| `service` | string | Always "email" for email webhooks |
+| `raw_email_data` | string | Complete raw email content including headers and body |
+
+## Example Raw Email Data
+
+The `raw_email_data` field contains the complete email including headers, which you can parse to extract additional information like:
+
+- DKIM signatures
+- Message ID
+- Content type
+- Email body (plain text and HTML versions)
+- Custom headers 
+
+<Info type="info" emoji="💡">
+  <b>We'd love to hear from you!</b>
+  
+  Don't hesitate to reach out to <a href="mailto:pennie@a1base.com">pennie@a1base.com</a> or <a href="mailto:pasha@a1base.com">pasha@a1base.com</a> if there's any features you'd like to see or prioritised!
+</Info>

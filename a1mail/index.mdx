@@ -1,0 +1,248 @@
+---
+title: 'Quickstart'
+description: 'Get your AI agents sending and receiving emails in minutes with A1Mail. Follow these simple steps to set up your email integration.'
+---
+⏰ Estimated setup & testing time: 15min.
+
+## 1. Sign Up and Get API Keys
+
+<Card title="Create an Account" icon="user-plus">
+  Sign up at [A1Base Dashboard](https://www.a1base.com/) and get your API credentials.
+</Card>
+
+- Keep these credentials secure as they'll be used for all API requests
+
+## 2. Create an Email Address
+
+You have two options to create your A1Mail email address:
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Method" icon="browser">
+      <li>Navigate to the <a href="https://www.a1base.com/dashboard/email-addresses">Email Dashboard</a></li>
+
+      <li>Click "Create New Email Address"</li>
+
+      <li>Enter your desired email name (e.g., "hello")</li>
+
+      <li>Select the domain (@a1send.com)</li>
+
+      <li>Click "Create"</li>
+  </Card>
+
+  <Card title="API Method" icon="code">
+    Use the API to programmatically create an email address:
+    
+
+    ```bash
+    curl --location 'https://api.a1base.com/v1/emails/{account_id}/create-email' \
+    --header 'X-API-Key: YOUR_API_KEY' \
+    --header 'X-API-Secret: YOUR_API_SECRET' \
+    --header 'Content-Type: application/json' \
+    --data '{
+        "address": "hello",
+        "domain_name": "a1send.com"
+    }'
+    ```
+  </Card>
+</CardGroup>
+Note: Email addresses must be between 5 and 30 characters long.
+
+## 3. Test Your New Inbox - Set Up Webhook for Receiving Emails
+
+### Overview
+To receive incoming emails, you'll need to configure a webhook that will notify your application when new emails arrive. This section guides you through setting up and testing webhooks in your development environment.
+
+### 3.1. Create a Webhook Endpoint
+First, create an endpoint in your application to receive email notifications. You can use one of our example snippets below or create your own.
+
+<Card title="Webhook Implementation Examples" icon="webhook">
+  <Tabs>
+    <Tab title="Python (Flask)">
+      ```python
+      from flask import Flask, request, jsonify
+      
+      app = Flask(__name__)
+      
+      @app.route('/webhook/email', methods=['POST'])
+      def email_webhook():
+          # Get the webhook payload
+          data = request.json        
+          
+          # Process the incoming email
+          print(f"Received email: {data['subject']} from {data['sender_address']}")
+          
+          # Access specific parts of the email
+          email_id = data.get('email_id')
+          subject = data.get('subject')
+          sender = data.get('sender_address')
+          recipient = data.get('recipient_address')
+          timestamp = data.get('timestamp')
+          raw_email = data.get('raw_email_data')
+          
+          # Your logic here
+          # ...
+          
+          # Return a success response
+          return jsonify({"status": "success"}), 200
+      
+      if __name__ == '__main__':
+          app.run(debug=True, port=5000)
+      ```
+    </Tab>
+    <Tab title="Node.js (Express)">
+      ```javascript
+      const express = require('express');
+      const app = express();
+      
+      app.use(express.json());
+      
+      app.post('/webhook/email', (req, res) => {
+        // Get the webhook payload
+        const data = req.body;      
+        
+        // Process the incoming email
+        console.log(`Received email: ${data.subject} from ${data.sender_address}`);        
+        
+        // Access specific parts of the email
+        const emailId = data.email_id;
+        const subject = data.subject;
+        const sender = data.sender_address;
+        const recipient = data.recipient_address;
+        const timestamp = data.timestamp;
+        const rawEmail = data.raw_email_data;
+        
+        // Your logic here
+        // ...
+        
+        // Return a success response
+        res.status(200).json({ status: 'success' });
+      });
+      
+      app.listen(3000, () => {
+        console.log('Server listening on port 3000');
+      });
+      ```
+    </Tab>
+    <Tab title="JavaScript (Vanilla)">
+      ```javascript
+      // Simple vanilla JavaScript webhook handler
+      // Can be used with any JavaScript framework or serverless function
+      
+      async function handleEmailWebhook(request) {
+        try {
+          // Parse the incoming JSON payload
+          const data = await request.json();
+          
+          console.log(`Received email: ${data.subject} from ${data.sender_address}`);
+          
+          // Process email data
+          const { 
+            email_id, 
+            subject, 
+            sender_address, 
+            recipient_address, 
+            timestamp, 
+            service,
+            raw_email_data 
+          } = data;
+          
+          // Your logic here
+          // ...
+          
+          // Return a success response
+          return new Response(JSON.stringify({ status: 'success' }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        } catch (error) {
+          console.error('Error processing webhook:', error);
+          return new Response(JSON.stringify({ status: 'error', message: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+### 3.2 Expose Your Local Webhook Endpoint
+
+To receive emails in your inbox, you need to expose your local webhook endpoint to the internet. You can use ngrok to do this.
+Run the following command in your CLI to start ngrok:  
+```bash  
+ngrok http 3000
+```
+After starting ngrok
+
+1. **Find the forwarding URL** in the ngrok output:
+    ```
+    Forwarding https://0fcbcda91e79.ngrok.app -> http://localhost:3000
+    ```
+
+2. **Create the full webhook URL** by appending your webhook endpoint path:
+    ```
+    https://0fcbcda91e79.ngrok.app/webhook/email
+    ```
+
+3. **Use this complete URL** in the A1Mail dashboard webhook settings.
+
+
+### 3.3 Register Your Webhook in the Dashboard
+
+Once you have your webhook URL, you need to register it in the A1Mail dashboard:
+
+1. Log in to your [A1Base Dashboard](https://www.a1base.com/)
+2. Navigate to the Email Settings section
+3. Find your email address and click "Configure Webhook"
+4. Enter your full webhook URL (e.g., `https://0fcbcda91e79.ngrok.app/webhook/email`)
+5. Click "Save Changes"
+
+### 3.4 Test Your Webhook
+
+Send a test email to your inbox and check if the webhook is receiving the email notifications.
+
+## 4. Send Your First Email
+
+Now that you've confirmed your inbox can receive emails, you can start sending emails as that email address.
+
+
+<Card title="Sending an Email via API" icon="paper-plane">
+  Use the following API call to send your first email:
+  
+  ```bash
+  curl --location 'https://api.a1base.com/v1/emails/{account_id}/send' \
+  --header 'X-API-Key: YOUR_API_KEY' \
+  --header 'X-API-Secret: YOUR_API_SECRET' \
+  --header 'Content-Type: application/json' \
+  --data '{
+      "from": "hello@a1send.com",
+      "to": "recipient@example.com",
+      "subject": "My First A1Mail Email",
+      "text": "Hello from my AI agent! This is my first email sent through A1Mail."
+  }'
+  ```
+</Card>
+
+## 5. In Summary
+
+To ensure everything is working correctly:
+
+1. Send a test email to your new A1Mail address from your personal email
+2. Check that your webhook receives the incoming email notification
+3. Respond to the email using the A1Mail API
+
+Now that you've set up basic email functionality, explore more advanced features:
+
+- [Sending HTML Emails](/a1mail/sending-email)
+- [Setting Up Custom Mail Domains](/a1mail/custom-mail-domain/index)
+- [Email Webhook Security](/api-reference/email/receiving-email)
+
+With these steps completed, your AI agent now has a fully functional email inbox! You can send and receive emails programmatically, enabling your agent to communicate with users through email.
+
+<Info type="info" emoji="💡">
+  <b>We'd love to hear from you!</b>
+  
+  Don't hesitate to reach out to <a href="mailto:pennie@a1base.com">pennie@a1base.com</a> or <a href="mailto:pasha@a1base.com">pasha@a1base.com</a> if there's any features you'd like to see or prioritised!
+</Info>

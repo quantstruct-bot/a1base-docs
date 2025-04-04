@@ -29,6 +29,10 @@
     {
       "name": "API Reference",
       "url": "api-reference"
+    },
+    {
+      "name": "A1Mail",
+      "url": "a1mail"
     }
   ],
   "anchors": [
@@ -92,18 +96,22 @@
       "pages": ["api-reference/cron-jobs/introduction"]
     },
     {
-      "group": "Email",
+      "group": "A1Mail",
+      "pages": ["a1mail/index"]
+    },
+    {
+      "group": "Email API",
       "pages": [
-        "api-reference/email/create-email",
-        "api-reference/email/receiving-email",
-        "api-reference/email/sending-email"
+        "a1mail/create-email",
+        "a1mail/receiving-email",
+        "a1mail/sending-email"
       ]
     },
     {
       "group": "Custom Mail Domain",
       "pages": [
-        "api-reference/custom-mail-domain/index",
-        "api-reference/custom-mail-domain/verify-dns-settings"
+        "a1mail/custom-mail-domain/index",
+        "a1mail/custom-mail-domain/verify-dns-settings"
       ]
     }
   ],
