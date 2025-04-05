@@ -9,7 +9,6 @@ description: 'After setting up your custom mail domain DNS records, it is crucia
 - **Command Line (CLI):** Use `dig` or `nslookup` to verify DNS records directly
 - **Tools:**
   - **[MxToolbox](https://mxtoolbox.com/)**: Comprehensive suite of DNS checking tools
-  - **[Google Admin Toolbox](https://toolbox.googleapps.com/apps/checkmx/)**: Simple interface for checking MX records
 </Info>
 
 ## Why DNS Verification Is Important
@@ -26,7 +25,6 @@ Before using any verification tools, understand what you're looking for:
 ### 1. MX Records
 
 Verify that your MX record points to `mail.a101.bot` with priority `10`:
-
 ```
 yourdomain.com. IN MX 10 mail.a101.bot.
 ```
@@ -62,7 +60,6 @@ _dmarc.yourdomain.com. IN TXT "v=DMARC1; p=none; rua=mailto:postmaster@yourdomai
 ### Shortcuts:
 - [Command Line (CLI)](#1-command-line-tools)
 - [MxToolbox](#2-mxtoolbox)
-- [Google Admin Toolbox](#3-google-admin-toolbox)
 
 ## 1. Command Line Tools
 
@@ -93,16 +90,6 @@ dig TXT 2025_default_mail._domainkey.mail.yourdomain.com
     (You can find this in the A1Mail email dashboard)
 - **For DMARC records**: Use the [DMARC Lookup tool](https://mxtoolbox.com/DMARC.aspx)
 	+ Enter: `_dmarc.yourdomain.com` (exact host)
-
----
-
-## 3. Google Admin Toolbox
-
-[Google Admin Toolbox](https://toolbox.googleapps.com/apps/checkmx/) provides a simple interface to check MX records and email delivery:
-
-1. Go to [Google Admin Toolbox](https://toolbox.googleapps.com/apps/checkmx/)
-2. Enter your domain name and click **Check MX**
-3. Review the results to ensure your MX records are correctly configured
 
 ---
 
