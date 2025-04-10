@@ -172,6 +172,20 @@ Once you have your webhook URL, you need to register it in the A1Mail dashboard:
 4. Enter your full webhook URL (e.g., `https://0fcbcda91e79.ngrok.app/webhook/email`)
 5. Click "Save Changes"
 
+## Webhook Precedence
+
+When an email is received, A1Mail will attempt to deliver it to a webhook in the following order:
+
+1. Individual email address webhook
+2. Custom domain webhook
+3. Default webhook
+
+If a webhook is not configured or returns an error, A1Mail will try the next webhook in the precedence list.
+
+![Individual Email Webhook](https://public-a1base-agent-images.s3.us-east-1.amazonaws.com/a1send-webhook.png)
+
+![Custom Domain Webhook](https://public-a1base-agent-images.s3.us-east-1.amazonaws.com/custom-mail-domain-webhook.png)
+
 ## 4. Test Your Webhook
 
 Send a test email to your inbox and check if the webhook is receiving the email notifications.
